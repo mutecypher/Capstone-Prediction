@@ -1,0 +1,133 @@
+---
+title: "Capstone Explore"
+author: "Michael Pearson"
+date: "7/28/2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(R.utils)
+library(tm)
+library(SnowballC)     
+library(MASS)
+eng_news <- read_file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.news.txt")
+nchar(eng_news)
+eng_blogs <- read_file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.blogs.txt")
+nchar(eng_blogs)
+eng_twitter <- read_file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.twitter.txt")
+nchar(eng_twitter)
+blog_us <- file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.blogs.txt")
+tweet_us <- file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.twitter.txt")
+news_us <- file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.news.txt")
+newslines <- countLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.news.txt")
+bloglines <- countLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.blogs.txt")
+tweetlines <- countLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.twitter.txt")
+blog25 <- readLines(blog_us, 25)
+tweet25 <- readLines(tweet_us, 25)
+news25 <- readLines(news_us, 25)
+close(news_us)
+close(blog_us)
+close(tweet_us)
+```
+
+## R Markdown
+
+Beginning of text processing
+```{r count chars}
+newzchar <- nchar(news25)
+sumnew <- sum(newzchar)
+tweetchar <- nchar(tweet25)
+sumtweet <- sum(tweetchar)
+blogchar <- nchar(blog25)
+sumblog <- sum(blogchar)
+```
+
+## Counting characters
+
+There are `r sumnew` characters in the first 25 lines of news.
+
+There are `r sumtweet` characters in the first 25 lines of blogs.
+
+There are `r sumblog` characters in the first 25 lines of tweets.
+
+### Counting lines
+
+There are `r tweetlines` lines in en_US.twitter.txt.
+
+There are `r bloglines` lines in en_US.blogs.txt
+
+
+There are `r newslines` lines in en_US.news.txt.
+
+```{r for quiz 1}
+tweet_us <- file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.twitter.txt")
+tweet_all <- readLines(tweet_us, n= tweetlines, warn = FALSE, encoding = "UTF=8", skipNul = TRUE)
+close(tweet_us)
+length(grep("A computer once beat me at chess, but it was no match for me at kickboxing", tweet_all))
+length(grep("love", tweet_all))/length(grep("hate", tweet_all))
+max(nchar(tweet_all[1:tweetlines]))
+news_us <- file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.news.txt")
+news_all <- readLines(news_us, n = newslines, warn = FALSE, encoding = "UTF=8", skipNul = TRUE)
+close(news_us)
+max(nchar(news_all[1:newslines]))
+blog_us <- file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.blogs.txt")
+blog_all <- readLines(blog_us, n= bloglines, warn = FALSE, encoding = "UTF=8", skipNul = TRUE)
+close(blog_us)
+max(nchar(blog_all[1:bloglines]))
+```
+## new section - loading and other fun
+```{r get it in}
+bwlines <- countLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt")
+badwords <- readLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt", n= bwlines, warn = FALSE, encoding = "latin1", skipNul = FALSE)
+set.seed(1151960)
+samp_per <- 0.1
+sam_twit <- tweet_all[sample(1:length(tweet_all),samp_per*length(tweet_all))]
+sam_news <- news_all[sample(1:length(news_all),samp_per*length(news_all))]
+sam_blog <- blog_all[sample(1:length(blog_all),samp_per*length(blog_all))]
+use_this <- c(sam_blog,sam_news, sam_twit)
+sam_Corpus <- VCorpus(VectorSource(use_this))
+docs <- tm_map(sam_Corpus, removePunctuation)
+docs$word <- gsub("[^[:alpha:]]", "", docs$word) 
+##for (j in seq(docs)) {
+##    docs[[j]] <- gsub("/", " ", docs[[j]])
+##    docs[[j]] <- gsub("@", " ", docs[[j]])
+##    docs[[j]] <- gsub("\\|", " ", docs[[j]])
+##    docs[[j]] <- gsub("\u2028", " ", docs[[j]])
+##    docs[[j]] <- gsub("#", " ", docs[[j]])
+##}
+docs <- tm_map(docs, removeNumbers)
+docs <- tm_map(docs, tolower)   
+docs <- tm_map(docs, PlainTextDocument)
+DocsCopy <- docs
+docs <- tm_map(docs, removeWords, stopwords("english"))  
+docs <- tm_map(docs, removeWords, badwords)
+docs <- tm_map(docs, PlainTextDocument)
+## Now let's make a version Potter's stemming algorithm
+foodocs <- tm_map(docs, stemDocument)
+foodocs <- tm_map(foodocs, PlainTextDocument)
+## remove the whitespaces from both types
+docs <- tm_map(docs, stripWhitespace)
+foodocs <- tm_map(foodocs, stripWhitespace)
+foodocs <- tm_map(foodocs, PlainTextDocument)
+docs <- tm_map(docs, PlainTextDocument)
+```
+
+``` {r file fun}
+if(!file.exists("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/dtm_foodocs.csv")){
+dtm_foodocs <- DocumentTermMatrix(foodocs)
+sparse_foodocs <- removeSparseTerms(dtm_foodocs, 0.1)
+write.csv(as.matrix(sparse_foodocs), file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/dtm_foodocs.csv")
+}
+sparse_foodocs <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/dtm_foodocs.csv")
+if(!file.exists("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/tdm_foodocs.csv")){
+tdm_foodocs <- TermDocumentMatrix(foodocs)
+tdm_sparse_foodocs <- removeSparseTerms(tdm_foodocs, 0.1)
+write.csv(as.matrix(tdm_sparse_foodocs), file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/tdm_foodocs.csv")
+}
+tdm_sparse_foodocs <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/tdm_foodocs.csv")
+```
+
