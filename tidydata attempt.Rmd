@@ -113,7 +113,7 @@ We will remove non alphabetic characters, remove blanks, and then count word fre
 ``` {r get the love, include=TRUE}
 badwords <- readLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt", warn = FALSE)
 set.seed(1151960)
-samp_per <- 0.3
+samp_per <- 0.15
 sam_twit <- tweet_all[sample(1:length(tweet_all),samp_per*length(tweet_all))]
 write_lines(sam_twit, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/twittersample.txt")
 sam_news <- news_all[sample(1:length(news_all),samp_per*length(news_all))]
@@ -123,7 +123,7 @@ write_lines(sam_blog, "/Users/mutecypher/Documents/Documents - Michael’s iMac/
 sam_Corpus <- VCorpus(DirSource("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples"))
 sam_tidy <- tidy(sam_Corpus)
 data("stop_words")
-text_tokens <- sam_tidy %>% unnest_tokens(word, text) %>% anti_join(stop_words, by = "word")
+text_tokens <- sam_tidy %>% unnest_tokens(word, text) quadraon <- %>% anti_join(stop_words, by = "word")
 ## remove blanks that were created
 mystopwords <- data_frame(word = badwords)
 ##close(badwords)
@@ -140,6 +140,16 @@ bigram_count <- text_bigrams %>% count(bigram, sort = TRUE)
 trigram_count <- text_trigrams %>% count(trigram, sort = TRUE)
 quadgram_count <- text_quadgrams %>% count(quadgram, sort = TRUE)
 quingram_count <- text_quingrams %>% count(quingram, sort = TRUE)
+write.csv(text_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_count.csv" )
+write.csv(text_tokens, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_tokens.csv")
+write.csv(text_bigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_bigrams.csv" )
+write.csv(text_trigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_trigrams.csv" )
+write.csv(text_quadgrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_quadgrams.csv" )
+write.csv(text_quingrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_quingrams.csv" )
+write.csv(bigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/bigram_count.csv" )
+write.csv(trigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/trigram_count.csv" )
+write.csv(quadgram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quadgram_count.csv" )
+write.csv(quingram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quingram_count.csv" )
 ```
 
 ## Count the words
@@ -237,6 +247,13 @@ ggraph(bigram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n), show.l
  theme_void()
 tri_trigrams <- separate(trigram_count, trigram, c("word1", "word2", "word3"), sep = " ")
 quad_quadgrams <-  separate(quadgram_count, quadgram, c("word1", "word2", "word3", "word4"), sep = " ")
-quin_quingram <-  separate(quingram_count, quingram, c("word1", "word2", "word3", "word4", "word5"), sep = " ")
+quin_quingrams <-  separate(quingram_count, quingram, c("word1", "word2", "word3", "word4", "word5"), sep = " ")
+write.csv(bi_bigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/bi_bigrams.csv" )
+write.csv(tri_trigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/tri_trigrams.csv" )
+write.csv(quad_quadgrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quad_quadgrams.csv" )
+write.csv(quin_quingrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quin_quingrams.csv" )
+
 ```
+## Play with some text Dog.
+
 
