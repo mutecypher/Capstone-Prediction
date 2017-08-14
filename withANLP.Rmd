@@ -1,0 +1,40 @@
+---
+title: "with ANLP"
+author: "Michael Pearson"
+date: "8/14/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ANLP, warn.conflicts = FALSE)
+blog_us <- file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.blogs.txt")
+tweet_us <- file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.twitter.txt")
+news_us <- file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.news.txt")
+newslines <- countLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.news.txt")
+bloglines <- countLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.blogs.txt")
+tweetlines <- countLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.twitter.txt")
+tweet_all <- readLines(tweet_us, n= tweetlines, warn = FALSE, encoding = "UTF=8", skipNul = TRUE)
+close(tweet_us)
+blog_all <- readLines(blog_us, n= bloglines, warn = FALSE, encoding = "UTF=8", skipNul = TRUE)
+close(blog_us)
+news_all <- readLines(news_us, n = newslines, warn = FALSE, encoding = "UTF=8", skipNul = TRUE)
+close(news_us)
+
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
