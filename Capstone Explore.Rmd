@@ -84,7 +84,7 @@ max(nchar(blog_all[1:bloglines]))
 bwlines <- countLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt")
 badwords <- readLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt", n= bwlines, warn = FALSE, encoding = "latin1", skipNul = FALSE)
 set.seed(1151960)
-samp_per <- 0.1
+samp_per <- 0.2
 sam_twit <- tweet_all[sample(1:length(tweet_all),samp_per*length(tweet_all))]
 sam_news <- news_all[sample(1:length(news_all),samp_per*length(news_all))]
 sam_blog <- blog_all[sample(1:length(blog_all),samp_per*length(blog_all))]
