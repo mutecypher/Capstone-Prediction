@@ -7,27 +7,50 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(igraph)
+library(ggraph)
+library(tidytext)
 quin_quingrams <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quin_quingrams.csv")
+quin_quingrams <- quin_quingrams[,2:7]
+```
+## first file - quingrams
+
+```{r round 2}
 quad_quadgrams <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quad_quadgrams.csv")
+quad_quadgrams <- quad_quadgrams[,2:6]
+```
+
+## Second file quadgrams
+
+```{r round 3}
 tri_trigrams <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/tri_trigrams.csv")
+tri_trigrams <- tri_trigrams[,2:5]
+```
+
+## Third file trigrams
+
+```{r round 4}
+bi_bigrams <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/bi_bigrams.csv")
+bi_bigrams <- bi_bigrams[,2:4]
+```
+
+## Now for the graphs
+
+```{r graphy}
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+bigram_graph <- bi_bigrams %>% filter(n > 2000) %>% graph_from_data_frame()
+ggraph(bigram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = a, end_cap = circle(.07, 'inches')) + geom_node_point(color = "lightblue", size = 5) + geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+ theme_void()
+trigram_graph <- tri_trigrams %>% filter(n > 500) %>% graph_from_data_frame()
+ggraph(trigram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = a, end_cap = circle(.07, 'inches')) + geom_node_point(color = "lightblue", size = 5) + geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+ theme_void()
+quadgram_graph <- quad_quadgrams %>% filter(n > 100) %>% graph_from_data_frame()
+ggraph(quadgram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = a, end_cap = circle(.07, 'inches')) + geom_node_point(color = "lightblue", size = 5) + geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+ theme_void()
+quingram_graph <- quin_quingrams %>% filter(n > 50) %>% graph_from_data_frame()
+ggraph(quingram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = a, end_cap = circle(.07, 'inches')) + geom_node_point(color = "lightblue", size = 5) + geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+ theme_void()
 ```
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

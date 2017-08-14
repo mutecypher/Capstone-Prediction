@@ -243,7 +243,7 @@ trigram_count  %>% with(wordcloud(trigram, n, max.words = 25, rot.per = 0.35, co
 bi_bigrams <- separate(bigram_count, bigram, c("word1", "word2"), sep = " ")
 a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
 bigram_graph <- bi_bigrams %>% filter(n > 2000) %>% graph_from_data_frame()
-ggraph(bigram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = a, end_cap = circle(.07, 'inches')) + geom_node_point(color = "lightblue", size = 5) + geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+ggraph(bigram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = a, end_cap = circle(.07, 'inches')) + geom_node_point(color = "lightblue", size = 5) + geom_node_text(aes(label = name), vjust = 1, hjust = 1)
  theme_void()
 tri_trigrams <- separate(trigram_count, trigram, c("word1", "word2", "word3"), sep = " ")
 quad_quadgrams <-  separate(quadgram_count, quadgram, c("word1", "word2", "word3", "word4"), sep = " ")
