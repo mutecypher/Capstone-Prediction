@@ -11,11 +11,9 @@ setwd("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capston
 library(quanteda)
 library(SnowballC)
 library(tm)
-fnames <- c("en_US.blogs.txt", "en_US.news.txt", "en_US.twitter.txt")
-initdocs <- VCorpus(DirSource())
-qdocs <- corpus(initdocs, fnames)
-docvars(qdocs, "Text") <- fnames
-q_dfm_docs <- dfm(qdocs, tolower = TRUE, stem = TRUE, remove = stopwords("english"), remove_punct = TRUE, remove_numbers = TRUE)
+sam_Corpus <- VCorpus(DirSource("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples"))
+
+
 
 ```
 
@@ -26,7 +24,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
-summary(cars)
+qdocs
 ```
 
 ## Including Plots
@@ -34,7 +32,8 @@ summary(cars)
 You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
-plot(pressure)
+
+
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

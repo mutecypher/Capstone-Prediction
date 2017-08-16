@@ -20,6 +20,7 @@ library(ggplot2, quietly = TRUE)
 library(tidyr, quietly = TRUE)
 library(ggraph, quietly = TRUE)
 library(igraph, quietly = TRUE)
+library(data.table, quietly = TRUE)
 eng_news <- read_file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.news.txt")
 eng_blogs <- read_file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.blogs.txt")
 eng_twitter <- read_file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.twitter.txt")
@@ -113,7 +114,7 @@ We will remove non alphabetic characters, remove blanks, and then count word fre
 ``` {r get the love, include=TRUE}
 badwords <- readLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt", warn = FALSE)
 set.seed(1151960)
-samp_per <- 0.15
+samp_per <- 0.3
 sam_twit <- tweet_all[sample(1:length(tweet_all),samp_per*length(tweet_all))]
 write_lines(sam_twit, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/twittersample.txt")
 sam_news <- news_all[sample(1:length(news_all),samp_per*length(news_all))]
@@ -123,6 +124,7 @@ write_lines(sam_blog, "/Users/mutecypher/Documents/Documents - Michael’s iMac/
 sam_Corpus <- VCorpus(DirSource("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples"))
 sam_tidy <- tidy(sam_Corpus)
 data("stop_words")
+tidy_sentences <- data.table(sam_tidy) %>% unnest_tokens(sentences, text, token = "sentences")
 text_tokens <- sam_tidy %>% unnest_tokens(word, text) %>% anti_join(stop_words, by = "word")
 ## remove blanks that were created
 mystopwords <- data_frame(word = badwords)
@@ -256,4 +258,30 @@ write.csv(quin_quingrams,file = "/Users/mutecypher/Documents/Documents - Michael
 ```
 ## Play with some text Dog.
 
+Bring together all but the n'th gram. Then use data.table functions to go fast
 
+and you can use the setorder command in data.table (and -n for descending )
+```{r make it small}
+bi_bigrams <- data.table(bi_bigrams)
+tri_trigrams <- data.table(tri_trigrams)
+quad_quadgrams <- data.table(quad_quadgrams)
+quin_quingrams <- data.table(quin_quingrams)
+setkey(bi_bigrams,word1)
+combi_tri <- unite(tri_trigrams, bigrams, c("word1", "word2"), sep = " ")
+combi_quad <- unite(quad_quadgrams, trigrams, c("word1", "word2", "word3"), sep = " ")
+combi_quin <- unite(quin_quingrams, quadgrams, c("word1", "word2","word3", "word4"), sep = " ")
+write.csv(combi_tri,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_trigrams.csv" )
+write.csv(combi_quad,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_quadgrams.csv" )
+write.csv(combi_quin,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_quingrams.csv")
+
+setkey(combi_tri, bigrams)
+setkey(combi_quad, trigrams)
+setkey(combi_quin, quadgrams)
+##example
+Do_it_is <- combi_tri["with one"]
+Do_another <- combi_quad["all or nothing"]
+Do_more <- combi_quin["at the intersection of"]
+print(Do_it_is)
+print(Do_another)
+print(Do_more)
+```
