@@ -114,44 +114,70 @@ We will remove non alphabetic characters, remove blanks, and then count word fre
 ``` {r get the love, include=TRUE}
 badwords <- readLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt", warn = FALSE)
 set.seed(1151960)
-samp_per <- 0.3
+samp_per <- 0.4
 sam_twit <- tweet_all[sample(1:length(tweet_all),samp_per*length(tweet_all))]
-write_lines(sam_twit, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/twittersample.txt")
+##write_lines(sam_twit, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/twittersample.txt")
 sam_news <- news_all[sample(1:length(news_all),samp_per*length(news_all))]
-write_lines(sam_news, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/newssample.txt")
+##write_lines(sam_news, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/newssample.txt")
 sam_blog <- blog_all[sample(1:length(blog_all),samp_per*length(blog_all))]
-write_lines(sam_blog, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/blogsample.txt")
+##write_lines(sam_blog, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/blogsample.txt")
 sam_Corpus <- VCorpus(DirSource("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples"))
 sam_tidy <- tidy(sam_Corpus)
 data("stop_words")
 tidy_sentences <- data.table(sam_tidy) %>% unnest_tokens(sentences, text, token = "sentences")
-text_tokens <- sam_tidy %>% unnest_tokens(word, text) %>% anti_join(stop_words, by = "word")
-## remove blanks that were created
-mystopwords <- data_frame(word = badwords)
-##close(badwords)
-text_tokens <- anti_join(text_tokens, mystopwords, by = "word")
-## remove non-ASCII text
-text_tokens$word <- gsub("[^[:alpha:]]", "", text_tokens$word) 
+text_tokens <- data.table(sam_tidy) %>% unnest_tokens(word, text, token = "words")
+text_tokens$word <- gsub("[^[:alpha:] | ^[:punct:]]" , " ", text_tokens$word) 
+tidy_sentences$sentences <- gsub("[^[:alpha:] | ^[:punct:]]", " ", tidy_sentences$sentences) 
+tidy_sentences$sentences <- gsub("  ", " ", tidy_sentences$sentences) 
 text_tokens <- subset(text_tokens, word !="")
+word_sen <- tidy_sentences %>% unnest_tokens(word, sentences) %>% anti_join(stop_words, by = "word")
 text_count <- text_tokens %>% count(word, sort = TRUE)
+rm(text_tokens)
+write.csv(text_count, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_count.csv")
+rm(text_count)
+word_count <- word_sen %>% count(word, sort = TRUE)
+write.csv(word_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/word_count.csv" )
+rm(word_count)
 text_bigrams <- sam_tidy %>% unnest_tokens(bigram, text, token = "ngrams", n=2)
-text_trigrams <- sam_tidy %>% unnest_tokens(trigram, text, token = "ngrams", n=3)
-text_quadgrams <- sam_tidy %>% unnest_tokens(quadgram, text, token = "ngrams", n=4)
-text_quingrams <- sam_tidy %>% unnest_tokens(quingram, text, token = "ngrams", n=5)
 bigram_count <- text_bigrams %>% count(bigram, sort = TRUE)
-trigram_count <- text_trigrams %>% count(trigram, sort = TRUE)
-quadgram_count <- text_quadgrams %>% count(quadgram, sort = TRUE)
-quingram_count <- text_quingrams %>% count(quingram, sort = TRUE)
-write.csv(text_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_count.csv" )
-write.csv(text_tokens, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_tokens.csv")
-write.csv(text_bigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_bigrams.csv" )
-write.csv(text_trigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_trigrams.csv" )
-write.csv(text_quadgrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_quadgrams.csv" )
-write.csv(text_quingrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_quingrams.csv" )
+rm(text_bigrams)
 write.csv(bigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/bigram_count.csv" )
+rm(bigram_count)
+sen_bigrams <- tidy_sentences %>% unnest_tokens(bigrams, sentences, token = "ngrams", n = 2)
+sen_bigram_count <- sen_bigrams %>% count(bigrams, sort = TRUE)
+rm(sen_bigrams)
+write.csv(sen_bigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_bigram_count.csv" )
+rm(sen_bigram_count)
+text_trigrams <- sam_tidy %>% unnest_tokens(trigram, text, token = "ngrams", n=3)
+trigram_count <- text_trigrams %>% count(trigram, sort = TRUE)
+rm(text_trigrams)
 write.csv(trigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/trigram_count.csv" )
+rm(trigram_count)
+sen_trigrams <- tidy_sentences %>% unnest_tokens(trigrams, sentences, token = "ngrams", n = 3)
+sen_trigram_count <- sen_trigrams %>% count(trigrams, sort = TRUE)
+rm(sen_trigrams)
+write.csv(sen_trigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_trigram_count.csv" )
+rm(sen_trigram_count)
+text_quadgrams <- sam_tidy %>% unnest_tokens(quadgram, text, token = "ngrams", n=4)
+quadgram_count <- text_quadgrams %>% count(quadgram, sort = TRUE)
+rm(text_quadgrams)
 write.csv(quadgram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quadgram_count.csv" )
-write.csv(quingram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quingram_count.csv" )
+rm(quadgram_count)
+sen_quadgrams <- tidy_sentences %>% unnest_tokens(quadgrams, sentences, token = "ngrams", n = 4)
+sen_quadgram_count <- sen_quadgrams %>% count(quadgrams, sort = TRUE)
+rm(sen_quadgrams_count)
+write.csv(sen_quadgram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_quadgram_count.csv" )
+rm(sen_quadgram_count)
+text_quingrams <- sam_tidy %>% unnest_tokens(quingram, text, token = "ngrams", n=5)
+quingram_count <- text_quingrams %>% count(quingram, sort = TRUE)
+rm(text_quingrams)
+write.csv(quingram_count ,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quingram_count.csv" )
+rm(quingram_count)
+sen_quingrams <- tidy_sentences %>% unnest_tokens(quingrams, sentences, token = "ngrams", n = 5)
+sen_quingram_count <- sen_quingrams %>% count(quingrams, sort = TRUE)
+rm(sen_quingrams)
+write.csv(sen_quingram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_quingram_count.csv" )
+rm(sen_quingram_count)
 ```
 
 ## Count the words
@@ -159,7 +185,7 @@ write.csv(quingram_count,file = "/Users/mutecypher/Documents/Documents - Michael
 Take a quick look at the head of the text count table.
 
 
-```{r count the words and d, include=TRUE}
+```{r count the words and d, include=TRUE, eval= FALSE}
 head(text_count)
 
 ```
@@ -176,7 +202,7 @@ Half that is `r prettyNum(sum(text_count$n)/2, big.mark = ",", scientific = FALS
 
 I will now do the calculation to determine both of the above benchmarks.
 
-```{r half way point, include=TRUE }
+```{r half way point, include=TRUE, eval= FALSE }
 text_count$sum <- cumsum(text_count$n)
 fiddy <- which(text_count$sum > sum(text_count$n/2))
 ninety <- which(text_count$sum > sum(text_count$n)*0.9)
@@ -192,7 +218,7 @@ It would take `r ninety[1]` words to cover 90% of all word instances in the samp
 
 ###Here's a bar plot of the 25 most common words in the sample
 
-```{r Word Count plot, include=TRUE}
+```{r Word Count plot, include=TRUE, eval= FALSE}
 samp_plot <- text_count[1:25,]
 g <- ggplot(data = samp_plot, aes(x=factor(word,levels = word),  y= n)) + geom_bar(stat="identity", fill = "green")
 g<- g + theme(axis.text.x = element_text(angle = 90))
@@ -202,7 +228,7 @@ g
 
 
 
-```{r bigram plot}
+```{r bigram plot, eval= FALSE}
 bigram_count[1:25,]
 bigram_samp <- bigram_count[1:25,]
 bigram_plot <- ggplot(data = bigram_samp, aes(x=factor(bigram, levels=bigram), y= n)) + geom_bar(stat="identity", fill = "blue")
@@ -212,7 +238,7 @@ bigram_plot
 ## And now let's bar plot the top 25 most frequent trigrams
 
 
-```{r trigram plot}
+```{r trigram plot, eval= FALSE}
 trigram_count[1:25,]
 trigram_samp <- trigram_count[1:25,]
 trigram_plot <- ggplot(data = trigram_samp, aes(x=factor(trigram, levels = trigram), y= n)) + geom_bar(stat="identity", fill = "blue")
@@ -222,26 +248,26 @@ trigram_plot
 # Word Clouds
 
 Let's make a word cloud of the top 50 words in the sample corpus
-```{r word cloud of 25 words}
+```{r word cloud of 25 words, eval= FALSE}
 library(wordcloud)
 text_tokens %>% count(word) %>% with(wordcloud(word, n, max.words = 50, rot.per = 0.55, colors = brewer.pal(8, "Dark2")))
 ```
 ## Bigram word clouds
 
 Let's make a wordcloud using the top 25 bigrams
-```{r bigram wordcloud}
+```{r bigram wordcloud, eval= FALSE}
 bigram_count  %>% with(wordcloud(bigram, n, max.words = 25, rot.per = 0.45, colors = brewer.pal(7, "Spectral")))
 ```
 ## Trigram word clouds
 
 Let's make a wordcloud of the top 25 trigrams
-```{r trigram wordcloud}
+```{r trigram wordcloud, eval= FALSE}
 trigram_count  %>% with(wordcloud(trigram, n, max.words = 25, rot.per = 0.35, colors = brewer.pal(11, "Paired")))
 ```
 ## Make a Markov chain of a few parts.
 
 
-```{r chains, message= FALSE, warning= FALSE}
+```{r chains, message= FALSE, warning= FALSE, eval= FALSE}
 bi_bigrams <- separate(bigram_count, bigram, c("word1", "word2"), sep = " ")
 a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
 bigram_graph <- bi_bigrams %>% filter(n > 2000) %>% graph_from_data_frame()
@@ -261,7 +287,7 @@ write.csv(quin_quingrams,file = "/Users/mutecypher/Documents/Documents - Michael
 Bring together all but the n'th gram. Then use data.table functions to go fast
 
 and you can use the setorder command in data.table (and -n for descending )
-```{r make it small}
+```{r make it small, eval= FALSE}
 bi_bigrams <- data.table(bi_bigrams)
 tri_trigrams <- data.table(tri_trigrams)
 quad_quadgrams <- data.table(quad_quadgrams)
