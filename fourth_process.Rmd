@@ -1,0 +1,76 @@
+---
+title: "fourth_process"
+author: "Michael Pearson"
+date: "9/3/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr, quietly = TRUE)
+library(readr, quietly = TRUE)
+library(R.utils, quietly = TRUE)
+library(SnowballC, quietly = TRUE)
+library(tidyr, quietly = TRUE)
+library(data.table, quietly = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r process}
+combi_tri <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_trigrams.csv", colClasses = c("NULL", NA, NA, NA) )
+combi_tri <- data.table(combi_tri)
+print(prettyNum(object.size(combi_tri), big.mark = ",", scientific = FALSE))
+combi_tri <- setorder(setDT(combi_tri), bigrams, -n) [,indx :=seq_len(.N), by = bigrams] [indx <= 5 & n > 1]
+setkey(combi_tri, bigrams)
+print(prettyNum(object.size(combi_tri), big.mark = ",", scientific = FALSE))
+write.csv(combi_tri, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/shrink_tri.csv")
+rm(combi_tri)
+sen_combi_Tri <- setorder(setDT(sen_combi_Tri), bigrams, -n) [,indx :=seq_len(.N), by = bigrams] [indx <= 5 & n > 1]
+setkey(sen_combi_tri, bigrams)
+print(prettyNum(object.size(sen_combi_tri), big.mark = ",", scientific = FALSE))
+write.csv(sen_combi_tri, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_shrink_tri.csv")
+combi_quad <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_quadgrams.csv", colClasses = c("NULL", NA, NA, NA,NA) )
+combi_quad <- data.table(combi_quad)
+print(prettyNum(object.size(combi_quad), big.mark = ",", scientific = FALSE))
+combi_quad <- setorder(setDT(combi_quad), trigrams, -n) [,indx :=seq_len(.N), by = trigrams] [indx <= 5 & n > 1]
+setkey(combi_quad, trigrams)
+print(prettyNum(object.size(combi_quad), big.mark = ",", scientific = FALSE))
+write.csv(combi_quad, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/shrink_quad.csv")
+rm(combi_quad)
+combi_sen_quad <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_combi_sen_quadgrams.csv", colClasses = c("NULL", NA, NA, NA,NA) )
+combi_sen_quad <- data.table(combi_sen_quad)
+print(prettyNum(object.size(combi_sen_quad), big.mark = ",", scientific = FALSE))
+combi_sen_quad <- setorder(setDT(combi_sen_quad), trigrams, -n) [,indx :=seq_len(.N), by = trigrams] [indx <= 5 & n > 1]
+setkey(combi_sen_quad, trigrams)
+print(prettyNum(object.size(combi_sen_quad), big.mark = ",", scientific = FALSE))
+write.csv(combi_sen_quad, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_shrink_quad.csv")
+rm(combi_quad)
+combi_quin <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_quingrams.csv", colClasses = c("NULL", NA, NA, NA,NA,NA) )
+combi_quin <- data.table(combi_quin)
+print(prettyNum(object.size(combi_quin), big.mark = ",", scientific = FALSE))
+combi_quin <- setorder(setDT(combi_quin), quadgrams, -n) [,indx :=seq_len(.N), by = quadgrams] [indx <= 5 & n > 1]
+setkey(combi_quin, quadgrams)
+print(prettyNum(object.size(combi_quin), big.mark = ",", scientific = FALSE))
+write.csv(combi_quin, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/shrink_quin.csv")
+rm(combi_quin)
+combi_sen_quin <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_combi_sen_quingrams.csv", colClasses = c("NULL", NA, NA, NA,NA,NA) )
+combi_sen_quin <- data.table(combi_sen_quin)
+print(prettyNum(object.size(combi_sen_quin), big.mark = ",", scientific = FALSE))
+combi_sen_quin <- setorder(setDT(combi_sen_quin), quadgrams, -n) [,indx :=seq_len(.N), by = quadgrams] [indx <= 5 & n > 1]
+setkey(combi_sen_quin, quadgrams)
+print(prettyNum(object.size(combi_sen_quin), big.mark = ",", scientific = FALSE))
+write.csv(combi_sen_quin, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_shrink_quin.csv")
+rm(combi_quin)
+```
+
+## stuff here
+
+You can also embed plots, for example:
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
