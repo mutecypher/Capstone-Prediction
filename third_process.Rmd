@@ -1,0 +1,60 @@
+---
+title: "Third_process"
+author: "Michael Pearson"
+date: "9/2/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidytext, quietly = TRUE)
+library(dplyr, quietly = TRUE)
+library(readr, quietly = TRUE)
+library(R.utils, quietly = TRUE)
+library(tm, quietly = TRUE)
+library(SnowballC, quietly = TRUE)
+library(ggplot2, quietly = TRUE)
+library(tidyr, quietly = TRUE)
+library(data.table, quietly = TRUE)
+```
+
+## R Markdown
+
+Do the combi thing
+
+```{r combi}
+bi_bigrams <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/bi_bigrams.csv" )
+bi_bigrams <- bi_bigrams[,2:4]
+bi_bigrams <- data.table(bi_bigrams)
+tri_trigrams <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/tri_trigrams.csv" )
+tri_trigrams <- tri_trigrams[,2:5]
+tri_trigrams <- data.table(tri_trigrams)
+combi_tri <- unite(tri_trigrams, bigrams, c("word1", "word2"), sep = " ")
+##rm(tri_trigrams)
+write.csv(combi_tri,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_trigrams.csv" )
+rm(combi_tri)
+##sen_tri_trigrams <- data.table(sen_tri_trigrams)
+##combi_sen_tri <- unite(sen_tri_trigrams, bigrams, c("word1", "word2"), sep = " ")
+##rm(sen_tri_trigrams)
+##write.csv(combi_sen_tri,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_trigrams.csv" )
+##rm(combi_sen_tri)
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+combi_tri <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_trigrams.csv" )
+combi_tri <- combi_tri[,2:4]
+combi_tri$sum <- cumsum(combi_tri$n)
+ninefive <- which(combi_tri$sum > sum(combi_tri$n *0.95))
+combi_tri95 <- combi_tri[1:ninefive,]
+ninety <- which(combi_tri$sum > sum(combi_tri$n *0.9))
+setkey(combi_tri, bigrams)
+trog <- setorder(setDT(combi_tri95), bigrams, -n) [,indx :=seq_len(.N), by = bigrams] [indx <= 5 ]
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
