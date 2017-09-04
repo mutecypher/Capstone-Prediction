@@ -1,5 +1,5 @@
 ---
-title: "First Exploration in Capstone Project"
+title: "tidydata_attempt"
 author: "Michael Pearson"
 date: "8/06/2017"
 output:
@@ -114,7 +114,7 @@ We will remove non alphabetic characters, remove blanks, and then count word fre
 ``` {r get the love, include=TRUE}
 badwords <- readLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt", warn = FALSE)
 set.seed(1151960)
-samp_per <- 0.4
+samp_per <- 0.8
 sam_twit <- tweet_all[sample(1:length(tweet_all),samp_per*length(tweet_all))]
 ##write_lines(sam_twit, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/twittersample.txt")
 sam_news <- news_all[sample(1:length(news_all),samp_per*length(news_all))]
@@ -187,9 +187,9 @@ rm(sen_quingram_count)
 Take a quick look at the head of the text count table.
 
 
-```{r count the words and d, include=TRUE, eval= FALSE}
+```{r count the words and d, include=TRUE, eval= TRUE}
+text_count <- text_tokens %>% count(word, sort = TRUE)
 head(text_count)
-
 ```
 ## Addressing some of the review criteria...
 
@@ -268,48 +268,3 @@ trigram_count  %>% with(wordcloud(trigram, n, max.words = 25, rot.per = 0.35, co
 ```
 ## Make a Markov chain of a few parts.
 
-
-```{r chains, message= FALSE, warning= FALSE, eval= FALSE}
-bi_bigrams <- separate(bigram_count, bigram, c("word1", "word2"), sep = " ")
-a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
-bigram_graph <- bi_bigrams %>% filter(n > 2000) %>% graph_from_data_frame()
-ggraph(bigram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = a, end_cap = circle(.07, 'inches')) + geom_node_point(color = "lightblue", size = 5) + geom_node_text(aes(label = name), vjust = 1, hjust = 1)
- theme_void()
-tri_trigrams <- separate(trigram_count, trigram, c("word1", "word2", "word3"), sep = " ")
-quad_quadgrams <-  separate(quadgram_count, quadgram, c("word1", "word2", "word3", "word4"), sep = " ")
-quin_quingrams <-  separate(quingram_count, quingram, c("word1", "word2", "word3", "word4", "word5"), sep = " ")
-write.csv(bi_bigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/bi_bigrams.csv" )
-write.csv(tri_trigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/tri_trigrams.csv" )
-write.csv(quad_quadgrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quad_quadgrams.csv" )
-write.csv(quin_quingrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quin_quingrams.csv" )
-
-```
-## Play with some text Dog.
-
-Bring together all but the n'th gram. Then use data.table functions to go fast
-
-and you can use the setorder command in data.table (and -n for descending )
-```{r make it small, eval= FALSE}
-bi_bigrams <- data.table(bi_bigrams)
-tri_trigrams <- data.table(tri_trigrams)
-quad_quadgrams <- data.table(quad_quadgrams)
-quin_quingrams <- data.table(quin_quingrams)
-setkey(bi_bigrams,word1)
-combi_tri <- unite(tri_trigrams, bigrams, c("word1", "word2"), sep = " ")
-combi_quad <- unite(quad_quadgrams, trigrams, c("word1", "word2", "word3"), sep = " ")
-combi_quin <- unite(quin_quingrams, quadgrams, c("word1", "word2","word3", "word4"), sep = " ")
-write.csv(combi_tri,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_trigrams.csv" )
-write.csv(combi_quad,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_quadgrams.csv" )
-write.csv(combi_quin,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_quingrams.csv")
-
-setkey(combi_tri, bigrams)
-setkey(combi_quad, trigrams)
-setkey(combi_quin, quadgrams)
-##example
-Do_it_is <- combi_tri["with one"]
-Do_another <- combi_quad["all or nothing"]
-Do_more <- combi_quin["at the intersection of"]
-print(Do_it_is)
-print(Do_another)
-print(Do_more)
-```

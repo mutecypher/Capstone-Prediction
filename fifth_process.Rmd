@@ -1,0 +1,51 @@
+---
+title: "fifth_process"
+author: "Michael Pearson"
+date: "9/3/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr, quietly = TRUE)
+library(readr, quietly = TRUE)
+library(R.utils, quietly = TRUE)
+library(SnowballC, quietly = TRUE)
+library(tidyr, quietly = TRUE)
+library(data.table, quietly = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r analysis}
+shrink_bi <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/shrink_bi.csv", colClasses = c("NULL", NA, NA, "NULL"))
+shrink_bi <- data.table(shrink_bi)
+setkey(shrink_bi, word1)
+shrink_tri <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/shrink_tri.csv", colClasses = c("NULL", NA, NA, "NULL"))
+shrink_tri <- data.table(shrink_tri)
+setkey(shrink_tri, bigrams)
+shrink_quad <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/shrink_quad.csv", colClasses = c("NULL", NA, NA, "NULL"))
+shrink_quad <- data.table(shrink_quad)
+setkey(shrink_quad, trigrams)
+shrink_quin <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/shrink_quin.csv", colClasses = c("NULL", NA, NA, "NULL"))
+shrink_quin <- data.table(shrink_quin)
+setkey(shrink_quin, quadgrams)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r more process, echo=FALSE}
+print(shrink_quad["no one ever"])
+print(shrink_quin["all over the place"])
+print(shrink_tri["she's not"])
+print(shrink_bi["i'm"])
+print(shrink_quad["a case of"])
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

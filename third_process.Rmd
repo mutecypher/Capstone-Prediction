@@ -19,12 +19,17 @@ library(data.table, quietly = TRUE)
 
 Do the combi thing
 
-```{r combi}
+```{r combis, eval= TRUE}
 bi_bigrams <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/bi_bigrams.csv" , colClasses = c("NULL", NA, NA, NA))
-##bi_bigrams <- bi_bigrams[,2:4]
 bi_bigrams <- data.table(bi_bigrams)
+sen_bi_bigrams <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_bi_bigrams.csv" , colClasses = c("NULL", NA, NA, NA))
+sen_bi_bigrams <- data.table(sen_bi_bigrams)
+```
+
+## trigrams
+
+``` {r trigrams, eval = TRUE}
 tri_trigrams <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/tri_trigrams.csv",colClasses = c("NULL", NA, NA, NA, NA) )
-##tri_trigrams <- tri_trigrams[,2:5]
 tri_trigrams <- data.table(tri_trigrams)
 combi_tri <- unite(tri_trigrams, bigrams, c("word1", "word2"), sep = " ")
 rm(tri_trigrams)
@@ -36,6 +41,12 @@ combi_sen_tri <- unite(sen_tri_trigrams, bigrams, c("word1", "word2"), sep = " "
 rm(sen_tri_trigrams)
 write.csv(combi_sen_tri,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_sen_tri.csv" )
 rm(combi_sen_tri)
+```
+
+## quadgrams
+
+
+``` {r quadgrams, eval = TRUE}
 quad_quadgrams <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quad_quadgrams.csv",colClasses = c("NULL", NA, NA, NA, NA,NA) )
 quad_quadgrams <- data.table(quad_quadgrams)
 combi_quad <- unite(quad_quadgrams, trigrams, c("word1", "word2", "word3"), sep = " ")
@@ -48,6 +59,11 @@ combi_sen_quad <- unite(sen_quad_quadgrams, trigrams, c("word1", "word2","word3"
 rm(sen_quad_quadgrams)
 write.csv(combi_sen_quad,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_sen_quad.csv" )
 rm(combi_sen_quad)
+```
+
+## quingrams
+
+``` {r quingrams, eval = TRUE}
 quin_quingrams <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quin_quingrams.csv",colClasses = c("NULL", NA, NA, NA, NA,NA,NA) )
 quin_quingrams <- data.table(quin_quingrams)
 combi_quin <- unite(quin_quingrams, quadgrams, c("word1", "word2", "word3","word4"), sep = " ")
