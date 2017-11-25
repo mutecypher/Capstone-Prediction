@@ -1,0 +1,26 @@
+---
+title: "Tidy Work V2"
+author: "Michael Pearson"
+date: "11/18/2017"
+output: html_document
+---
+
+```{r libraries, include=FALSE}
+library(dplyr, quietly = TRUE)
+library(readr, quietly = TRUE)
+library(R.utils, quietly = TRUE)
+library(tm, quietly = TRUE)
+library(SnowballC, quietly = TRUE)
+library(ggplot2, quietly = TRUE)
+library(tidyr, quietly = TRUE)
+library(ggraph, quietly = TRUE)
+library(igraph, quietly = TRUE)
+library(data.table, quietly = TRUE)
+```
+
+## R Read the Dog, er, file
+
+```{r read big file}
+tidy_sentences <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/tidy_sen.csv")
+##tidylines <- countLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/processed/tidy_sen.csv")
+```

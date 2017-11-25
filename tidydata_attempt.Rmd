@@ -72,6 +72,7 @@ blog_all <- readLines(blog_us, n= bloglines, warn = FALSE, encoding = "UTF=8", s
 close(blog_us)
 news_us <- file("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/en_US/en_US.news.txt")
 news_all <- readLines(news_us, n = newslines, warn = FALSE, encoding = "UTF=8", skipNul = TRUE)
+romance <- length(grep("romantic date", news_all))
 close(news_us)
 long_tweet <- max(nchar(tweet_all[1:tweetlines]))
 long_news <- max(nchar(news_all[1:newslines]))
@@ -92,6 +93,8 @@ The longest line in the twitter sample is `r long_tweet` characters. Duh!
 The longest line in the blog sample is `r prettyNum(long_blog, big.mark = ",", scientific = FALSE)` characters.
 
 The longest line in the news sample is `r prettyNum(long_news, big.mark = ",", scientific = FALSE)` characters.
+
+The phrase "romantic date" occurs `r romance` times.
 
 ## Getting rid of the profanity
 
@@ -114,13 +117,13 @@ We will remove non alphabetic characters, remove blanks, and then count word fre
 ``` {r get the love, include=TRUE}
 badwords <- readLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt", warn = FALSE)
 set.seed(1151960)
-samp_per <- 0.8
+samp_per <- 0.4
 sam_twit <- tweet_all[sample(1:length(tweet_all),samp_per*length(tweet_all))]
-##write_lines(sam_twit, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/twittersample.txt")
+write_lines(sam_twit, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/twittersample.txt")
 sam_news <- news_all[sample(1:length(news_all),samp_per*length(news_all))]
-##write_lines(sam_news, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/newssample.txt")
+write_lines(sam_news, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/newssample.txt")
 sam_blog <- blog_all[sample(1:length(blog_all),samp_per*length(blog_all))]
-##write_lines(sam_blog, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/blogsample.txt")
+write_lines(sam_blog, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/blogsample.txt")
 sam_Corpus <- VCorpus(DirSource("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples"))
 sam_tidy <- tidy(sam_Corpus)
 data("stop_words")
@@ -132,15 +135,17 @@ tidy_sentences$sentences <- gsub("[^[:alpha:] | ^[:punct:]]", " ", tidy_sentence
 tidy_sentences$sentences <- gsub("-", " ", tidy_sentences$sentences)
 tidy_sentences$sentences <- gsub("  ", " ", tidy_sentences$sentences) 
 text_tokens <- subset(text_tokens, word !="")
-word_sen <- tidy_sentences %>% unnest_tokens(word, sentences) %>% anti_join(stop_words, by = "word")
+word_sen <- tidy_sentences %>% unnest_tokens(word, sentences)
+stopit <- stop_words[stop_words$lexicon=="snowball",]
+fewer <- sapply(word_sen$word, function(x) gsub(paste(stopit$word, collapse = '|'), '', x))
 text_count <- text_tokens %>% count(word, sort = TRUE)
-rm(text_tokens)
+##rm(text_tokens)
 write.csv(text_count, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_count.csv")
 rm(text_count)
 word_count <- word_sen %>% count(word, sort = TRUE)
 write.csv(word_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/word_count.csv" )
 rm(word_count)
-text_bigrams <- sam_tidy %>% unnest_tokens(bigram, text, token = "ngrams", n=2)
+text_bigrams <- sam_tidy %>% unnest_tokens(bigram, text, token = "ngrams", n=2) 
 bigram_count <- text_bigrams %>% count(bigram, sort = TRUE)
 rm(text_bigrams)
 write.csv(bigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/bigram_count.csv" )
@@ -211,9 +216,9 @@ ninety <- which(text_count$sum > sum(text_count$n)*0.9)
 ```
 ## Needed words are...
 
-It would take the most frequent `r fiddy[1]` words to cover 50% of all word instances of the `r prettyNum(sum(text_count$n), big.mark=",", scientific = FALSE)` words in the sample corpus.
+It would take the most frequent words to cover 50% of all word instances of the `r prettyNum(sum(text_count$n), big.mark=",", scientific = FALSE)` words in the sample corpus.
 
-It would take `r ninety[1]` words to cover 90% of all word instances in the sample corpus.
+It would take  words to cover 90% of all word instances in the sample corpus.
 
 
 ## Let's do some graphing, plotting and histogramming

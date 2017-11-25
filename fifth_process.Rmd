@@ -41,11 +41,11 @@ setkey(shrink_quin, quadgrams)
 You can also embed plots, for example:
 
 ```{r more process, echo=FALSE}
-print(shrink_quad["no one ever"])
-print(shrink_quin["all over the place"])
-print(shrink_tri["she's not"])
-print(shrink_bi["i'm"])
-print(shrink_quad["a case of"])
+print(shrink_quin["on the sunny side"])
+print(shrink_quad["you must be"])
+print(shrink_quad["his little"])
+print(shrink_bi["explosive"])
+print(shrink_tri["at the"])
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
