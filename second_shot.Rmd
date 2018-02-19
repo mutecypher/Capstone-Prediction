@@ -2,7 +2,9 @@
 title: "Second_shot"
 author: "Michael Pearson"
 date: "8/24/2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -40,6 +42,11 @@ sen_bi_bigrams <- separate(sen_bigram_count, bigrams, c("word1", "word2"), sep =
 rm(sen_bigram_count)
 write.csv(sen_bi_bigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_bi_bigrams.csv" )
 rm(sen_bi_bigrams)
+test_bigram_count <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_bigram_count.csv", colClasses = c("NULL", NA, NA) )
+test_bi_bigrams <- separate(test_bigram_count, bigrams, c("word1", "word2"), sep = " ")
+rm(test_bigram_count)
+write.csv(test_bi_bigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_bi_bigrams.csv" )
+rm(test_bi_bigrams)
 ```
 
 ## trigrams
@@ -62,6 +69,12 @@ sen_tri_trigrams <- separate(sen_trigram_count, trigrams, c("word1", "word2", "w
 rm(sen_trigram_count)
 write.csv(sen_tri_trigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_tri_trigrams.csv" )
 rm(sen_tri_trigrams)
+test_trigram_count <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_trigram_count.csv" )
+test_trigram_count <- test_trigram_count[,2:3]
+test_tri_trigrams <- separate(test_trigram_count, trigrams, c("word1", "word2", "word3"), sep = " ")
+rm(test_trigram_count)
+write.csv(test_tri_trigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_tri_trigrams.csv" )
+rm(test_tri_trigrams)
 ```
 
 ## quadgrams
@@ -84,6 +97,11 @@ sen_quad_quadgrams <-  separate(sen_quadgram_count, quadgrams, c("word1", "word2
 rm(sen_quadgram_count)
 write.csv(sen_quad_quadgrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_quad_quadgrams.csv" )
 rm(sen_quad_quadgrams)
+test_quadgram_count <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_quadgram_count.csv")
+test_quad_quadgrams <- separate(test_quadgram_count, quadgrams, c("word1", "word2", "word3", "word4"), sep = " ")
+rm(test_quadgram_count)
+write.csv(test_quad_quadgrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_quad_quadgrams.csv" )
+rm(test_quad_quadgrams)
 ```
 
 ## quingrams
@@ -105,6 +123,12 @@ sen_quin_quingrams <-  separate(sen_quingram_count, quingrams, c("word1", "word2
 rm(sen_quingram_count)
 write.csv(sen_quin_quingrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_quin_quingrams.csv" )
 rm(sen_quin_quingrams)
+test_quingram_count <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_quingram_count.csv" )
+test_quingram_count <- test_quingram_count[,2:3]
+test_quin_quingrams <-  separate(test_quingram_count, quingrams, c("word1", "word2", "word3", "word4", "word5"), sep = " ")
+rm(test_quingram_count)
+write.csv(test_quin_quingrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_quin_quingrams.csv" )
+rm(test_quin_quingrams)
 ```
 
 ## Combis in part three

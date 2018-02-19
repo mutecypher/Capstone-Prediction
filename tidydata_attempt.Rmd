@@ -1,10 +1,10 @@
 ---
 title: "tidydata_attempt"
 author: "Michael Pearson"
-date: "8/06/2017"
+date: "12/21/2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ###Let's begin by loading the libraries and reading the files on my computer where the Swiftkey zips have been unzipped. 
@@ -105,7 +105,7 @@ I will use this file to filter profanity from my sample of the corpus.
 
 
 
-## Now let's create a sample of 10% of the text, load it into a corpus. 
+## Now let's create a sample of 12% of the text, load it into a corpus. 
 
 Then we will remove profanity (the 'badwords' file from Google), tidy the corpus using the 'tidytext' package - which follows tidy data procedures and makes one variable per column.
 
@@ -114,10 +114,10 @@ I use the file "full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_5
 
 We will remove non alphabetic characters, remove blanks, and then count word frequencies, and create tidy data frames for bigrams and trigrams.
 
-``` {r get the love, include=TRUE}
-badwords <- readLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt", warn = FALSE)
+``` {r make the sample corpus, include=TRUE}
+##badwords <- readLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt", warn = FALSE)
 set.seed(1151960)
-samp_per <- 0.4
+samp_per <- 0.20
 sam_twit <- tweet_all[sample(1:length(tweet_all),samp_per*length(tweet_all))]
 write_lines(sam_twit, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/twittersample.txt")
 sam_news <- news_all[sample(1:length(news_all),samp_per*length(news_all))]
@@ -131,60 +131,171 @@ tidy_sentences <- data.table(sam_tidy) %>% unnest_tokens(sentences, text, token 
 text_tokens <- data.table(sam_tidy) %>% unnest_tokens(word, text, token = "words")
 text_tokens$word <- gsub("[^[:alpha:] | ^[:punct:]]" , " ", text_tokens$word) 
 text_tokens$word   <- gsub("-", " ", text_tokens$word)
-tidy_sentences$sentences <- gsub("[^[:alpha:] | ^[:punct:]]", " ", tidy_sentences$sentences) 
+tidy_sentences$sentences <- gsub("'ve ", " have ", tidy_sentences$sentences) 
+tidy_sentences$sentences <- gsub("'ll ", " will ", tidy_sentences$sentences) 
+tidy_sentences$sentences <- gsub("'re ", " are ", tidy_sentences$sentences) 
+tidy_sentences$sentences <- gsub("'d ", " had ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub(" i'm ", "i am ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub(" im ", "i am ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub(" won't ", " will not ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub("n't ", " not ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub(" ur ", " your ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub(" tits ", " breasts ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub(" fuck ", " intercourse ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub(" shit ", " feces ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub(" piss ", " urine ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub(" cunt ", " vagina ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub(" pussy ", " vagina ", tidy_sentences$sentences)
+tidy_sentences$sentences <- gsub("[^[:alpha:]]", " ", tidy_sentences$sentences) 
 tidy_sentences$sentences <- gsub("-", " ", tidy_sentences$sentences)
 tidy_sentences$sentences <- gsub("  ", " ", tidy_sentences$sentences) 
+write.csv(tidy_sentences$sentences, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/tidy_sentences.csv")
+```
+
+##And now the sample space
+
+```{r make the test corpus}
+samp_per <- 2*samp_per
+set.seed(12212017)
+sam_twit <- tweet_all[sample(1:length(tweet_all),samp_per*length(tweet_all))]
+write_lines(sam_twit, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/tmsamples/twittersample.txt")
+sam_news <- news_all[sample(1:length(news_all),samp_per*length(news_all))]
+write_lines(sam_news, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/tmsamples/newssample.txt")
+sam_blog <- blog_all[sample(1:length(blog_all),samp_per*length(blog_all))]
+write_lines(sam_blog, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/tmsamples/blogsample.txt")
+test_corpus <- VCorpus(DirSource("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/tmsamples"))
+test_tidy <- tidy(test_corpus)
+test_sentences <- data.table(test_tidy) %>% unnest_tokens(sentences, text, token = "sentences")
+test_sentences$sentences <- gsub("'ve ", " have ", test_sentences$sentences) 
+test_sentences$sentences <- gsub("'ll ", " will ", test_sentences$sentences)
+test_sentences$sentences <- gsub("'re ", " are ", test_sentences$sentences) 
+test_sentences$sentences <- gsub("'d ", " had ", test_sentences$sentences)
+test_sentences$sentences <- gsub(" i'm ", " i am ", test_sentences$sentences)
+test_sentences$sentences <- gsub(" im ", " i am ", test_sentences$sentences)
+test_sentences$sentences <- gsub(" won't ", " will not ", test_sentences$sentences)
+test_sentences$sentences <- gsub("n't ", " not ", test_sentences$sentences)
+test_sentences$sentences <- gsub(" ur ", " your ", test_sentences$sentences)
+test_sentences$sentences <- gsub("[^[:alpha:]]", " ", test_sentences$sentences) 
+test_sentences$sentences <- gsub("-", " ", test_sentences$sentences)
+test_sentences$sentences <- gsub("  ", " ", test_sentences$sentences)
+write.csv(test_sentences$sentences, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_sentences.csv")
+```
+## back to making a corpus
+
+``` {r  process the sample corpus}
 text_tokens <- subset(text_tokens, word !="")
-word_sen <- tidy_sentences %>% unnest_tokens(word, sentences)
-stopit <- stop_words[stop_words$lexicon=="snowball",]
-fewer <- sapply(word_sen$word, function(x) gsub(paste(stopit$word, collapse = '|'), '', x))
+write.csv(text_tokens, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_tokens.csv")
+word_sen <- tidy_sentences %>% unnest_tokens(word, sentences) %>% mutate(word, wordStem(word))
+write.csv(word_sen, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/word_sen.csv")
+##stopit <- stop_words[stop_words$lexicon=="snowball",]
 text_count <- text_tokens %>% count(word, sort = TRUE)
-##rm(text_tokens)
 write.csv(text_count, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_count.csv")
 rm(text_count)
 word_count <- word_sen %>% count(word, sort = TRUE)
 write.csv(word_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/word_count.csv" )
 rm(word_count)
-text_bigrams <- sam_tidy %>% unnest_tokens(bigram, text, token = "ngrams", n=2) 
+```
+
+## make the n-grams for the sample corpus
+
+```{r bigrams of sentences}
+text_bigrams <- sam_tidy %>% unnest_tokens(bigram, text, token = "ngrams", n=2)
 bigram_count <- text_bigrams %>% count(bigram, sort = TRUE)
+text_bigrams <- text_bigrams$bigram
+write.csv(text_bigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_bigrams.csv" )
 rm(text_bigrams)
 write.csv(bigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/bigram_count.csv" )
 rm(bigram_count)
 sen_bigrams <- tidy_sentences %>% unnest_tokens(bigrams, sentences, token = "ngrams", n = 2)
 sen_bigram_count <- sen_bigrams %>% count(bigrams, sort = TRUE)
+sen_bigrams <- sen_bigrams$bigrams
+write.csv(sen_bigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_bigrams.csv" )
 rm(sen_bigrams)
 write.csv(sen_bigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_bigram_count.csv" )
 rm(sen_bigram_count)
+test_bigrams <- test_sentences %>% unnest_tokens(bigrams, sentences, token = "ngrams", n = 2)
+test_bigram_count <- test_bigrams %>% count(bigrams, sort = TRUE)
+test_bigrams <- test_bigrams$bigrams
+write.csv(test_bigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_bigrams.csv" )
+rm(test_bigrams)
+write.csv(test_bigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_bigram_count.csv" )
+rm(test_bigram_count)
+```
+## trigrams
+
+```{r trigrams}
 text_trigrams <- sam_tidy %>% unnest_tokens(trigram, text, token = "ngrams", n=3)
 trigram_count <- text_trigrams %>% count(trigram, sort = TRUE)
+text_trigrams <- text_trigrams$trigram
+write.csv(text_trigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_trigrams.csv" )
 rm(text_trigrams)
 write.csv(trigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/trigram_count.csv" )
 rm(trigram_count)
 sen_trigrams <- tidy_sentences %>% unnest_tokens(trigrams, sentences, token = "ngrams", n = 3)
 sen_trigram_count <- sen_trigrams %>% count(trigrams, sort = TRUE)
+sen_trigrams <- sen_trigrams$trigrams
+write.csv(sen_trigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_trigrams.csv" )
 rm(sen_trigrams)
 write.csv(sen_trigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_trigram_count.csv" )
 rm(sen_trigram_count)
+test_trigrams <- test_sentences %>% unnest_tokens(trigrams, sentences, token = "ngrams", n = 3)
+test_trigram_count <- test_trigrams %>% count(trigrams, sort = TRUE)
+test_trigrams <- test_trigrams$trigrams
+write.csv(test_trigrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_trigrams.csv" )
+rm(test_trigrams)
+write.csv(test_trigram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_trigram_count.csv" )
+rm(test_trigram_count)
+```
+## quadgrams
+
+``` {r quadgrams}
 text_quadgrams <- sam_tidy %>% unnest_tokens(quadgram, text, token = "ngrams", n=4)
 quadgram_count <- text_quadgrams %>% count(quadgram, sort = TRUE)
+text_quadgrams <- text_quadgrams$quadgram
+write.csv(text_quadgrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_quadgrams.csv" )
 rm(text_quadgrams)
 write.csv(quadgram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quadgram_count.csv" )
 rm(quadgram_count)
 sen_quadgrams <- tidy_sentences %>% unnest_tokens(quadgrams, sentences, token = "ngrams", n = 4)
 sen_quadgram_count <- sen_quadgrams %>% count(quadgrams, sort = TRUE)
-rm(sen_quadgrams_count)
+sen_quadgrams <- sen_quadgrams$quadgrams
+write.csv(sen_quadgrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_quadgrams.csv" )
+rm(sen_quadgrams)
 write.csv(sen_quadgram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_quadgram_count.csv" )
 rm(sen_quadgram_count)
+test_quadgrams <- test_sentences %>% unnest_tokens(quadgrams, sentences, token = "ngrams", n = 4)
+test_quadgram_count <- test_quadgrams %>% count(quadgrams, sort = TRUE)
+test_quadgrams <- test_quadgrams$quadgrams
+write.csv(test_quadgrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_quadgrams.csv" )
+rm(test_quadgrams)
+write.csv(test_quadgram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_quadgram_count.csv" )
+rm(test_quadgram_count)
+```
+### quingrams
+
+
+``` {r quingrams}
 text_quingrams <- sam_tidy %>% unnest_tokens(quingram, text, token = "ngrams", n=5)
 quingram_count <- text_quingrams %>% count(quingram, sort = TRUE)
+text_quingrams <- text_quingrams$quingram
+write.csv(text_quingrams ,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/text_quingrams.csv" )
 rm(text_quingrams)
 write.csv(quingram_count ,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/quingram_count.csv" )
 rm(quingram_count)
 sen_quingrams <- tidy_sentences %>% unnest_tokens(quingrams, sentences, token = "ngrams", n = 5)
 sen_quingram_count <- sen_quingrams %>% count(quingrams, sort = TRUE)
+sen_quingrams <- sen_quingrams$quingrams
+write.csv(sen_quingrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_quingrams.csv" )
 rm(sen_quingrams)
 write.csv(sen_quingram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_quingram_count.csv" )
 rm(sen_quingram_count)
+test_quingrams <- test_sentences %>% unnest_tokens(quingrams, sentences, token = "ngrams", n = 5)
+test_quingram_count <- test_quingrams %>% count(quingrams, sort = TRUE)
+test_quingrams <- test_quingrams$quingrams
+write.csv(test_quingrams,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_quingrams.csv" )
+rm(test_quingrams)
+write.csv(test_quingram_count,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_quingram_count.csv" )
+rm(test_quingram_count)
 ```
 
 ## Count the words
@@ -199,26 +310,24 @@ head(text_count)
 ## Addressing some of the review criteria...
 
 
-Find the number of words that would cover half the lexicon
+Find the number of words that would cover 90% the lexicon
 
-Find the number of words that would cover 90% of it.
+Find the number of words that would cover 98% of it.
 
 Total words are `r prettyNum(sum(text_count$n), big.mark=",", scientific = FALSE)`
 
-Half that is `r prettyNum(sum(text_count$n)/2, big.mark = ",", scientific = FALSE)`
-
 I will now do the calculation to determine both of the above benchmarks.
 
-```{r half way point, include=TRUE, eval= FALSE }
+```{r half way point, include=TRUE, eval= TRUE }
 text_count$sum <- cumsum(text_count$n)
-fiddy <- which(text_count$sum > sum(text_count$n/2))
-ninety <- which(text_count$sum > sum(text_count$n)*0.9)
+ninetyfive <- which(text_count$sum > sum(text_count$n)*0.95)
+ninetyeight <- which(text_count$sum > sum(text_count$n)*0.98)
 ```
 ## Needed words are...
 
-It would take the most frequent words to cover 50% of all word instances of the `r prettyNum(sum(text_count$n), big.mark=",", scientific = FALSE)` words in the sample corpus.
+It would take `r prettyNum(ninetyfive[1], big.mark=",", scientific = FALSE)` to cover 95% of all word instances of the `r prettyNum(sum(text_count$n), big.mark=",", scientific = FALSE)` words in the sample corpus.
 
-It would take  words to cover 90% of all word instances in the sample corpus.
+It would take `r prettyNum(ninetyeight[1], big.mark=",", scientific = FALSE)` words to cover 98% of all word instances in the sample corpus.
 
 
 ## Let's do some graphing, plotting and histogramming

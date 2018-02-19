@@ -2,7 +2,9 @@
 title: "Third_process"
 author: "Michael Pearson"
 date: "9/2/2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -41,6 +43,12 @@ combi_sen_tri <- unite(sen_tri_trigrams, bigrams, c("word1", "word2"), sep = " "
 rm(sen_tri_trigrams)
 write.csv(combi_sen_tri,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_sen_tri.csv" )
 rm(combi_sen_tri)
+test_tri_trigrams <- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_tri_trigrams.csv",colClasses = c("NULL", NA, NA, NA, NA) )
+test_tri_trigrams <- data.table(test_tri_trigrams)
+combi_test_tri <- unite(test_tri_trigrams, bigrams, c("word1", "word2"), sep = " ")
+rm(test_tri_trigrams)
+write.csv(combi_test_tri,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_test_tri.csv" )
+rm(combi_test_tri)
 ```
 
 ## quadgrams
@@ -59,6 +67,12 @@ combi_sen_quad <- unite(sen_quad_quadgrams, trigrams, c("word1", "word2","word3"
 rm(sen_quad_quadgrams)
 write.csv(combi_sen_quad,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_sen_quad.csv" )
 rm(combi_sen_quad)
+test_quad_quadgrams<- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_quad_quadgrams.csv",colClasses = c("NULL", NA, NA, NA, NA,NA) )
+test_quad_quadgrams <- data.table(test_quad_quadgrams)
+combi_test_quad <- unite(test_quad_quadgrams, trigrams, c("word1", "word2","word3"), sep = " ")
+rm(test_quad_quadgrams)
+write.csv(combi_test_quad,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_test_quad.csv" )
+rm(combi_test_quad)
 ```
 
 ## quingrams
@@ -76,6 +90,12 @@ combi_sen_quin <- unite(sen_quin_quingrams, quadgrams, c("word1", "word2","word3
 rm(sen_quin_quingrams)
 write.csv(combi_sen_quin,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_sen_quin.csv" )
 rm(combi_sen_quin)
+test_quin_quingrams<- read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/test_quin_quingrams.csv",colClasses = c("NULL", NA, NA, NA, NA,NA,NA) )
+test_quin_quingrams <- data.table(test_quin_quingrams)
+combi_test_quin <- unite(test_quin_quingrams, quadgrams, c("word1", "word2","word3", "word4"), sep = " ")
+rm(test_quin_quingrams)
+write.csv(combi_test_quin,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_sen_quin.csv" )
+rm(combi_test_quin)
 ```
 
 ## Including Stuff at the end
