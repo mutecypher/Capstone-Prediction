@@ -34,26 +34,28 @@ print(prettyNum(object.size(sen_combi_bi), big.mark = ",", scientific = FALSE))
 sen_combi_bi <- setorder(setDT(sen_combi_bi), word1, -n) [,indx :=seq_len(.N), by = word1] [indx <= 5 & n > 2]
 write.csv(sen_combi_bi, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/shrink_sen_bi.csv")
 rm(sen_combi_bi)
-```
+```head
 ## trigrams now
 
 ```{r tri, eval = TRUE}
-combi_tri <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_trigrams.csv", colClasses = c("NULL", NA, NA, NA) )
+combi_tri <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/combi_tri_s_s.csv", colClasses = c("NULL", NA, NA, NA) )
 combi_tri <- data.table(combi_tri)
 print(prettyNum(object.size(combi_tri), big.mark = ",", scientific = FALSE))
-combi_tri <- setorder(setDT(combi_tri), bigrams, -n) [,indx :=seq_len(.N), by = bigrams] [indx <= 5 & n > 2]
+combi_tri <- setorder(setDT(combi_tri), bigrams, -n) [,indx :=seq_len(.N), by = bigrams] 
 setkey(combi_tri, bigrams)
 print(prettyNum(object.size(combi_tri), big.mark = ",", scientific = FALSE))
-write.csv(combi_tri, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/shrink_tri.csv")
+write.csv(combi_tri, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/shrink_tri_s_s.csv")
+rm(combi_tri)
+combi_tri <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/combi_tri_ns_s.csv", colClasses = c("NULL", NA, NA, NA) )
+combi_tri <- data.table(combi_tri)
+print(prettyNum(object.size(combi_tri), big.mark = ",", scientific = FALSE))
+combi_tri <- setorder(setDT(combi_tri), bigrams, -n) [,indx :=seq_len(.N), by = bigrams] [indx <= 5 & n > 0]
+setkey(combi_tri, bigrams)
+print(prettyNum(object.size(combi_tri), big.mark = ",", scientific = FALSE))
+write.csv(combi_tri, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/shrink_tri_ns_s.csv")
 rm(combi_tri)
 sen_combi_tri <-  read.csv(file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/combi_sen_tri.csv", colClasses = c("NULL", NA, NA, NA) )
-sen_combi_tri <- data.table(sen_combi_tri)
-print(prettyNum(object.size(sen_combi_tri), big.mark = ",", scientific = FALSE))
-sen_combi_tri <- setorder(setDT(sen_combi_tri), bigrams, -n) [,indx :=seq_len(.N), by = bigrams] [indx <= 5 & n > 2]
-setkey(sen_combi_tri, bigrams)
-print(prettyNum(object.size(sen_combi_tri), big.mark = ",", scientific = FALSE))
-write.csv(sen_combi_tri, file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/processed/sen_shrink_tri.csv")
-rm(sen_combi_tri)
+
 ```
 ## quads
 
