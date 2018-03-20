@@ -1,0 +1,59 @@
+---
+title: "qorder"
+author: "Michael Pearson"
+date: "2/23/2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr, quietly = TRUE)
+library(readr, quietly = TRUE)
+library(R.utils, quietly = TRUE)
+library(SnowballC, quietly = TRUE)
+library(tidyr, quietly = TRUE)
+library(data.table, quietly = TRUE)
+library(quanteda)
+library(data.table, quietly = TRUE)
+library(readtext)
+library(stringr)
+```
+
+## Remove the one-offs
+
+
+## now let's process the ones with multiple bigrams
+
+``` {r bigrams, eval = TRUE}
+blocky <- function(trap, tim, ful_tri) {
+  ##a <- floor(nrow(tim)/10000)
+  a <- 5
+ full_tri <- data.table()
+ downstream <- 0.5
+for (i in 1:a)
+{ 
+##tardis <- combi_tri_s_s[combi_tri_s_s$bigrams == c(tim[i,1]),]
+##tardis$sum <- sum(tardis$tri_gram_s_s)
+##tardis$prob <- ((tardis$tri_gram_s_s - downstream)/tardis$sum)
+##full_tri <- rbind(full_tri, tardis)
+trixy$prob <- (trixy$tri_gram_ns_ns[trixy$bigrams == aggy$bigrams[i]] - 0.5)/aggy$sum[i]
+}
+return(full_tri)
+}
+combi_tri_ns_ns <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/combi_tri_ns_ns.csv", colClasses = c("NULL", NA, NA, NA) )
+combi_tri_ns_ns <- data.table(combi_tri_ns_ns)
+trixy <- combi_tri_ns_ns[combi_tri_ns_ns$tri_gram_ns_ns >= 4,]
+aggy <- aggregate(trixy$tri_gram_ns_ns, by=list(trixy$bigrams), FUN = sum)
+names(aggy)[names(aggy) == "Group.1"] <- "bigrams"
+names(aggy)[names(aggy) == "x"] <- "sum"
+##tim <- unique(trixy$bigrams)
+##tim <- as.character(tim)
+##tim <- data.table(tim)
+aggy <- data.table(aggy)
+blah <- blocky(trixy, aggy, full_tri)
+write.csv(blah,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/nosingles_stri_ns_ns.csv" )
+```
+
+## quadgrams
