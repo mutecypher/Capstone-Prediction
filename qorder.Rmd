@@ -25,7 +25,7 @@ library(stringr)
 
 
 ## now let's process the ones with multiple bigrams
-```{r}
+```{r bigrams, eval = TRUE}
 blocky <- function(trap, tim, ful_tri) {
 a <- floor(nrow(tim)/100)
 b <- 101
