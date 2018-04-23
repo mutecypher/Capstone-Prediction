@@ -38,11 +38,11 @@ d <- 1
     mid_tri <- data.table()
     if(nrow(tim) - a >= c )
       {
-setkey(trixy,word2)
+setkey(trixy,word1)
       for (i in d:a)
 { 
 ##setkey(trixy,bigrams)
-tardis <- trixy[as.character(aggy$word2[i])]
+tardis <- trixy[as.character(aggy$word1[i])]
 tardis$prob <- (tardis$bi_gram_ns_ns - downstream)/aggy$sum[i]
 mid_tri <- rbind(mid_tri, tardis)
 ##trixy <- trixy[bigrams != aggy$bigrams[i],]
@@ -57,7 +57,7 @@ mid_tri <- rbind(mid_tri, tardis)
       d <- 100*floor(nrow(tim)/100) + 1
     for (i in d:a)
 { 
-tardis <- trixy[word2 == aggy$word2[i],]
+tardis <- trixy[word1 == aggy$word1[i],]
 tardis$prob <- (tardis$bi_gram_ns_ns - downstream)/aggy$sum[i]
 mid_tri <- rbind(mid_tri, tardis)
 trixy <- trixy[word2 != aggy$word2[i],]
@@ -68,10 +68,10 @@ trixy <- trixy[word2 != aggy$word2[i],]
  }
 return(full_tri)
 }
-combi_bi_ns_ns <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/bi_gram_ns_ns.csv", colClasses = c("NULL", NA, NA) )
+combi_bi_ns_ns <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/bi_gram_ns_ns.csv", colClasses = c( NA, NA, NA) )
 combi_bi_ns_ns <- data.table(combi_bi_ns_ns)
 trixy <- combi_bi_ns_ns[combi_bi_ns_ns$bi_gram_ns_ns >= 4,]
-aggy <- trixy[,.(sum = sum(bi_gram_ns_ns)), by = word2]
+aggy <- trixy[,.(sum = sum(bi_gram_ns_ns)), by = word1]
 aggy <- aggy[aggy$sum >= 10]
 aggy <- data.table(aggy)
 blah <- blocky(trixy, aggy, full_tri)
@@ -83,7 +83,7 @@ rm(blah)
 ```
 ## Now the Trigrams
 
-``` {r trigrams, eval = TRUE}
+``` {r trigrams, eval = FALSE}
 blocky <- function(trap, tim, ful_tri) {
 a <- floor(nrow(tim)/100)
 b <- 101
@@ -138,7 +138,7 @@ rm(blah)
 ## should run first
 
 
-``` {r quadgrams, eval = TRUE}
+``` {r quadgrams, eval = FALSE}
 blocky <- function(trap, tim, ful_tri) {
 a <- floor(nrow(tim)/100)
 b <- 101
@@ -190,7 +190,7 @@ rm(blah)
 ```
 Now the Quin-grams
 
-```{r quingrams}
+```{r quingrams, eval = FALSE}
 blocky <- function(trap, tim, ful_tri) {
 a <- floor(nrow(tim)/100)
 b <- 100
