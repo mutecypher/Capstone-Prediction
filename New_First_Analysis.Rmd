@@ -3,8 +3,8 @@ title: "New_First_Analysis"
 author: "Michael Pearson"
 date: "12/20/2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ###Keep the n gram files - hadn't done that before. 
@@ -114,7 +114,7 @@ We will remove non alphabetic characters, remove blanks, and then count word fre
 ``` {r get the corpus, include= TRUE, eval= TRUE}
 badwords <- readLines("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/full-list-of-bad-words-banned-by-google-txt-file_2013_11_26_04_53_31_867.txt", warn = FALSE)
 set.seed(1151960)
-samp_per <- 0.5
+samp_per <- 0.2
 sam_twit <- tweet_all[sample(1:length(tweet_all),samp_per*length(tweet_all))]
 write_lines(sam_twit, "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/files/samples/twittersample.txt")
 sam_news <- news_all[sample(1:length(news_all),samp_per*length(news_all))]
