@@ -16,8 +16,6 @@ library(SnowballC, quietly = TRUE)
 library(tidyr, quietly = TRUE)
 library(data.table, quietly = TRUE)
 library(quanteda)
-library(data.table, quietly = TRUE)
-library(readtext)
 library(stringr)
 library(tinytex)
 ```
