@@ -1,13 +1,13 @@
 ---
-title: "subsetr"
+title: "Thirdprocess"
 author: "Michael Pearson"
-date: "3/17/2018"
+date: "6/10/2018"
 output:
   pdf_document: default
   html_document: default
 ---
 
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr, quietly = TRUE)
 library(readr, quietly = TRUE)
@@ -16,9 +16,8 @@ library(SnowballC, quietly = TRUE)
 library(tidyr, quietly = TRUE)
 library(data.table, quietly = TRUE)
 library(quanteda)
-library(data.table, quietly = TRUE)
-library(readtext)
 library(stringr)
+library(tinytex)
 ```
 
 ## Remove the one-offs
@@ -32,7 +31,6 @@ b <- 101
 c <- a
 d <- 1
  full_tri <- data.table()
- downstream <- 0.5
  for (j in 1:b)
   {
     mid_tri <- data.table()
@@ -43,7 +41,7 @@ setkey(trixy,word1)
 { 
 ##setkey(trixy,bigrams)
 tardis <- trixy[as.character(aggy$word1[i])]
-tardis$prob <- (tardis$bi_gram_ns_ns - downstream)/aggy$sum[i]
+tardis$prob <- tardis$bi_gram_ns_ns/aggy$sum[i]
 mid_tri <- rbind(mid_tri, tardis)
 ##trixy <- trixy[bigrams != aggy$bigrams[i],]
 ##print(paste("i is ",i))
@@ -58,7 +56,7 @@ mid_tri <- rbind(mid_tri, tardis)
     for (i in d:a)
 { 
 tardis <- trixy[word1 == aggy$word1[i],]
-tardis$prob <- (tardis$bi_gram_ns_ns - downstream)/aggy$sum[i]
+tardis$prob <- tardis$bi_gram_ns_ns/aggy$sum[i]
 mid_tri <- rbind(mid_tri, tardis)
 }  
     }
@@ -66,14 +64,15 @@ mid_tri <- rbind(mid_tri, tardis)
  }
 return(full_tri)
 }
-combi_bi_ns_ns <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/bi_gram_ns_ns.csv", colClasses = c( NA, NA, NA) )
+combi_bi_ns_ns <- read.csv("/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/bi_gram_ns_ns.csv", colClasses = c( NA, NA, NA) )
 combi_bi_ns_ns <- data.table(combi_bi_ns_ns)
-trixy <- combi_bi_ns_ns[combi_bi_ns_ns$bi_gram_ns_ns >= 4,]
+trixy <- combi_bi_ns_ns[combi_bi_ns_ns$bi_gram_ns_ns >= 8,]
+##trixy <- data.table(combi_bi_ns_ns)
 aggy <- trixy[,.(sum = sum(bi_gram_ns_ns)), by = word1]
-aggy <- aggy[aggy$sum >= 10]
+aggy <- aggy[aggy$sum >= 5]
 aggy <- data.table(aggy)
 blah <- blocky(trixy, aggy, full_tri)
-write.csv(blah,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/nosingles_bi_ns_ns.csv" )
+write.csv(blah,file = "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_bi_ns_ns.csv" )
 rm(trixy)
 rm(aggy)
 rm(combi_bi_ns_ns)
@@ -88,7 +87,6 @@ b <- 1001
 c <- a
 d <- 1
  full_tri <- data.table()
- downstream <- 0.5
  for (j in 1:b)
   {
     mid_tri <- data.table()
@@ -98,7 +96,7 @@ setkey(trixy,bigrams)
       for (i in d:a)
 { 
 tardis <- trixy[as.character(aggy$bigrams[i])]
-tardis$prob <- (tardis$tri_gram_ns_ns - downstream)/aggy$sum[i]
+tardis$prob <- tardis$tri_gram_ns_ns/aggy$sum[i]
 mid_tri <- rbind(mid_tri, tardis)
 }
     d <- a + 1
@@ -106,11 +104,11 @@ mid_tri <- rbind(mid_tri, tardis)
       }
     else {
       a <- nrow(tim)
-      d <- 1000*floor(nrow(tim)/1000) + 1
+      d <- 100*floor(nrow(tim)/1000) + 1
     for (i in d:a)
 { 
 tardis <- trixy[bigrams == aggy$bigrams[i],]
-tardis$prob <- (tardis$tri_gram_ns_ns - downstream)/aggy$sum[i]
+tardis$prob <- tardis$tri_gram_ns_ns/aggy$sum[i]
 mid_tri <- rbind(mid_tri, tardis)
 ##trixy <- trixy[bigrams != aggy$bigrams[i],]
 }  
@@ -119,14 +117,15 @@ mid_tri <- rbind(mid_tri, tardis)
  }
 return(full_tri)
 }
-combi_tri_ns_ns <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/combi_tri_ns_ns.csv", colClasses = c("NULL", NA, NA, NA) )
+combi_tri_ns_ns <- read.csv("/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/combi_tri_ns_ns.csv", colClasses = c("NULL", NA, NA, NA) )
 combi_tri_ns_ns <- data.table(combi_tri_ns_ns)
 trixy <- combi_tri_ns_ns[combi_tri_ns_ns$tri_gram_ns_ns >= 4,]
+##trixy <- data.table(combi_tri_ns_ns)
 aggy <- trixy[,.(sum = sum(tri_gram_ns_ns)), by = bigrams]
-aggy <- aggy[aggy$sum >= 10]
+aggy <- aggy[aggy$sum >= 6]
 aggy <- data.table(aggy)
 blah <- blocky(trixy, aggy, full_tri)
-write.csv(blah,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/nosingles_tri_ns_ns.csv" )
+write.csv(blah,file = "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_tri_ns_ns.csv" )
 rm(trixy)
 rm(aggy)
 rm(combi_tri_ns_ns)
@@ -143,7 +142,6 @@ b <- 101
 c <- a
 d <- 1
  full_tri <- data.table()
- downstream <- 0.5
  for (j in 1:b)
   {
     mid_tri <- data.table()
@@ -153,7 +151,7 @@ setkey(trixy,trigrams)
       for (i in d:a)
 { 
 tardis <- trixy[as.character(aggy$trigrams[i])]
-tardis$prob <- (tardis$quad_gram_ns_ns - downstream)/aggy$sum[i]
+tardis$prob <- tardis$quad_gram_ns_ns/aggy$sum[i]
 mid_tri <- rbind(mid_tri, tardis)
 }
     d <- a + 1
@@ -165,7 +163,7 @@ mid_tri <- rbind(mid_tri, tardis)
     for (i in d:a)
 { 
 tardis <- trixy[as.character(aggy$trigrams[i])]
-tardis$prob <- (tardis$tri_gram_ns_ns - downstream)/aggy$sum[i]
+tardis$prob <- tardis$tri_gram_ns_ns/aggy$sum[i]
 mid_tri <- rbind(mid_tri, tardis)
 }  
     }
@@ -173,14 +171,15 @@ mid_tri <- rbind(mid_tri, tardis)
  }
 return(full_tri)
 }
-combi_quad_ns_ns <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/combi_quad_ns_ns.csv", colClasses = c("NULL", NA, NA, NA) )
+combi_quad_ns_ns <- read.csv("/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/combi_quad_ns_ns.csv", colClasses = c("NULL", NA, NA, NA) )
 combi_quad_ns_ns <- data.table(combi_quad_ns_ns)
-trixy <- combi_quad_ns_ns[combi_quad_ns_ns$quad_gram_ns_ns >= 4,]
+trixy <- combi_quad_ns_ns[combi_quad_ns_ns$quad_gram_ns_ns >= 2,]
+##trixy <- data.table(combi_quad_ns_ns)
 aggy <- trixy[,.(sum = sum(quad_gram_ns_ns)), by = trigrams]
-aggy <- aggy[aggy$sum >= 10]
+aggy <- aggy[aggy$sum >= 6]
 aggy <- data.table(aggy)
 blah <- blocky(trixy, aggy, full_tri)
-write.csv(blah,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/nosingles_quad_ns_ns.csv" )
+write.csv(blah,file = "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_quad_ns_ns.csv" )
 rm(trixy)
 rm(aggy)
 rm(combi_quad_ns_ns)
@@ -188,14 +187,13 @@ rm(blah)
 ```
 Now the Quin-grams
 
-```{r quingrams, eval = TRUE}
+```{r quingrams, eval = FALSE}
 blocky <- function(trap, tim, ful_tri) {
 a <- floor(nrow(tim)/100)
 b <- 101
 c <- a
 d <- 1
  full_tri <- data.table()
- downstream <- 0.5
  for (j in 1:b)
   {
     mid_tri <- data.table()
@@ -205,7 +203,7 @@ setkey(trixy,quadgrams)
       for (i in d:a)
 { 
 tardis <- trixy[as.character(aggy$quadgrams[i])]
-tardis$prob <- (tardis$quin_gram_ns_ns - downstream)/aggy$sum[i]
+tardis$prob <- tardis$quin_gram_ns_ns/aggy$sum[i]
 mid_tri <- rbind(mid_tri, tardis)
 }
     d <- a + 1
@@ -217,7 +215,7 @@ mid_tri <- rbind(mid_tri, tardis)
     for (i in d:a)
 { 
 tardis <- trixy[as.character(aggy$trigrams[i])]
-tardis$prob <- (tardis$quad_gram_ns_ns - downstream)/aggy$sum[i]
+tardis$prob <- tardis$quad_gram_ns_ns/aggy$sum[i]
 mid_tri <- rbind(mid_tri, tardis)
 }  
     }
@@ -225,14 +223,15 @@ mid_tri <- rbind(mid_tri, tardis)
  }
 return(full_tri)
 }
-combi_quin_ns_ns <- read.csv("/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/combi_quin_ns_ns.csv", colClasses = c("NULL", NA, NA, NA) )
+combi_quin_ns_ns <- read.csv("/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/combi_quin_ns_ns.csv", colClasses = c("NULL", NA, NA, NA) )
 combi_quin_ns_ns <- data.table(combi_quin_ns_ns)
-trixy <- combi_quin_ns_ns[combi_quin_ns_ns$quin_gram_ns_ns >= 4,]
+trixy <- combi_quin_ns_ns[combi_quin_ns_ns$quin_gram_ns_ns >= 1,]
+##trixy <- data.table(combi_quin_ns_ns)
 aggy <- trixy[,.(sum = sum(quin_gram_ns_ns)), by = quadgrams]
-aggy <- aggy[aggy$sum >= 10]
+aggy <- aggy[aggy$sum >= 3]
 aggy <- data.table(aggy)
 blah <- blocky(trixy, aggy, full_tri)
-write.csv(blah,file = "/Users/mutecypher/Documents/Documents - Michael’s iMac/Coursera/Capstone Project/20sample/nosingles_quin_ns_ns.csv" )
+write.csv(blah,file = "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_quin_ns_ns.csv" )
 rm(trixy)
 rm(aggy)
 rm(combi_quin_ns_ns)

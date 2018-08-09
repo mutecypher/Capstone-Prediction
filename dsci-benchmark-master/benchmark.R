@@ -1,6 +1,7 @@
 require(digest)
 require(stringi)
 require(data.table)
+require(R.utils)
 
 ################################################################################################
 #
@@ -12,7 +13,12 @@ require(data.table)
 # 01b. Get text from randomly selected tweets
 ################################################################################################
 
-tweets <- readLines('data/tweets.txt', encoding = 'UTF-8')
+
+tweet_us <- file("/Users/mutecypher/Documents/Coursera/Capstone Project/files/samples/twittersample.txt")
+#tweetlines <- countLines("/Users/mutecypher/Documents/Coursera/Capstone Project/files/en_US/en_US.twitter.txt")
+#tweets <- readLines(tweet_us, n= tweetlines, warn = FALSE, encoding = "UTF-8", skipNul = TRUE)
+tweets <- readLines(tweet_us, encoding = 'UTF-8')
+close(tweet_us)
 
 # verify checksum of loaded lines
 digest(paste0(tweets, collapse = '||'), 
@@ -25,7 +31,11 @@ digest(paste0(tweets, collapse = '||'),
 ################################################################################################
 
 # make sure we can read it back in
-blogs <- readLines('data/blogs.txt', encoding = 'UTF-8')
+bloglines <- countLines("/Users/mutecypher/Documents/Coursera/Capstone Project/files/samples/blogsample.txt")
+blog_us <- file("/Users/mutecypher/Documents/Coursera/Capstone Project/files/en_US/en_US.blogs.txt")
+blogs <- readLines(blog_us, n= bloglines, warn = FALSE, encoding = "UTF=8", skipNul = TRUE)
+close(blog_us)
+
 
 # verify checksum of loaded lines
 digest(paste0(blogs, collapse = '||'), 
@@ -205,8 +215,63 @@ benchmark <- compiler::cmpfun(function(FUN, ..., sent.list, ext.output=T) {
 
 # As an example, we create a very simple baseline algorithm which always returns
 # the three most frequent English words.
-predict.baseline <- function(x){c('the', 'on', 'a')}
-
+predict.baseline <- function(x){
+  x <- tolower(x)
+  x <- gsub("'ve ", " have ", x) 
+  x <- gsub("'ll ", " will ", x) 
+  x <- gsub("'re ", " are ", x) 
+  x <- gsub("'d ", " had ", x)
+  x <- gsub(" i'm ", "i am ", x)
+  x <- gsub(" im ", "i am ", x)
+  x <- gsub(" won't ", " will not ", x)
+  x <- gsub("n't ", " not ", x)
+  x <- gsub(" ur ", " your ", x)
+  x <- gsub("it's ", "it is ", x)
+  x <- gsub("^ *|(?<= ) | *$", "", x, perl = TRUE)
+  x <- gsub("[^[:alpha:]]", " ", x) 
+  x <- data.table(x)
+  trap <- separate(x, 1,into = c("word1", "word2", "word3","word4"), sep = " ", extra = "drop", fill = "right")
+  is.na(trap) <- trap==''
+  out <- trap
+  setkey(n_grams, word1)
+  try1 <- n_grams[out$word4]
+  try1 <- try1[is.na(try1$word2),]
+  try1$weighted <- try1[,.(prob*0.3)]
+  setkey(n_grams, word1, word2)
+  try2 <- n_grams[.(out$word3, out$word4)]
+  try2 <- try2[is.na(try2$word3),]
+  try2$weighted <- try2[,.(prob*0.5)]
+  setkey(n_grams, word1, word2, word3)
+  try3 <- n_grams[.(out$word2, out$word3, out$word4)]
+  try3 <- try3[is.na(try3$word4),]
+  try3$weighted <- try3[,.(prob*0.7)]
+  setkey(n_grams, word1, word2, word3, word4)
+  try4 <- n_grams[.(out$word1, out$word2, out$word3, out$word4)]
+  try4$weighted <- try4[,.(prob*1.0)]
+  newt <- rbind(try4, try3, try2, try1)
+  newt <- data.table(newt)
+  newt <- newt[order(-weighted),]
+  newt <- newt[1:3,5]
+  newt<- data.frame(lapply(newt, as.character), stringsAsFactors = FALSE)
+  nearly <- c(newt[3,1],newt[2,1],newt[,1])
+  if (sum(is.na(nearly) == 1))
+  {
+    nearly <- c("the","on","a")
+  }
+  else if (sum(is.na(nearly) == 2)){
+    nearly <- c("the","on","a")
+  }
+  else if (sum(is.na(nearly) == 3)){
+    nearly <- c("the","on","a")
+  }
+  else if (sum(is.na(nearly) == 2)){
+    nearly <- c("the","on","a")
+  }
+  else if (sum(is.na(nearly) == 3)){
+    nearly <- c("the","on","a")
+  }
+  return(nearly)
+}
 
 
 ################################################################################################
@@ -219,3 +284,4 @@ benchmark(predict.baseline,
           sent.list = list('tweets' = tweets, 
                            'blogs' = blogs), 
           ext.output = T)
+

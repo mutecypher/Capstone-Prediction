@@ -1,5 +1,5 @@
 ---
-title: "Quantedav1"
+title: Firstprocess
 author: "Michael Pearson"
 date: "07/03/2018"
 output: pdf_document
@@ -90,7 +90,7 @@ rm(one_gram_test)
 rm(ts_one_gram)
 rm(test_one_gram)
 ```
-
+## onegram with no stemming, but yes to stop words
 ```{r no stemming but stopping, eval= FALSE}
 dfm_one_gram_nostem_and_stop <- dfm(ns_one_gram, tolower = TRUE, stem = FALSE)
 one_gram_ns_s <- sort(colSums(dfm_one_gram_nostem_and_stop), decreasing = TRUE)

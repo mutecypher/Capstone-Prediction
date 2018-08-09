@@ -1,0 +1,39 @@
+---
+title: "Sep_after_pcalc"
+author: "Michael Pearson"
+date: "7/14/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyr)
+bi_grams <- read.csv("/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_bi_ns_ns.csv", colClasses = c(NA, NA, NA, NA, NA ))
+bi_grams <- bi_grams[,2:5]
+write.csv(bi_grams, "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/sep_bi.csv")
+rm(bi_grams)
+tri_grams <- read.csv("/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_tri_ns_ns.csv", colClasses = c(NA, NA, NA, NA, NA ))
+tri_grams <- tri_grams[,2:5]
+tri_test <- separate(tri_grams,bigrams, c("word1", "word2"), sep = " ")
+write.csv(tri_test, "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/sep_tri.csv")
+rm(tri_grams)
+rm(tri_test)
+quad_grams <- read.csv("/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_quad_ns_ns.csv", colClasses = c(NA, NA, NA, NA, NA ))
+quad_grams <- quad_grams[,2:5]
+quad_test <- separate(quad_grams,trigrams, c("word1", "word2", "word3"), sep = " ")
+write.csv(quad_test, "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/sep_quad.csv")
+rm(quad_grams)
+rm(quad_test)
+quin_grams <- read.csv("/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_quin_ns_ns.csv", colClasses = c(NA, NA, NA, NA, NA ))
+quin_grams <- quin_grams[,2:5]
+quin_test <- separate(quin_grams,quadgrams, c("word1", "word2", "word3", "word4"), sep = " ")
+write.csv(quin_test, "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/sep_quin.csv")
+rm(quin_grams)
+rm(quin_test)
+
+
+```
+
+## explanation
+
+read the nosingles files, separate the n-grams into n words, save
