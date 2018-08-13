@@ -1,7 +1,7 @@
 ---
 title: "Thirdprocess"
 author: "Michael Pearson"
-date: "6/10/2018"
+date: "8/14/2018"
 output:
   pdf_document: default
   html_document: default
@@ -66,10 +66,10 @@ return(full_tri)
 }
 combi_bi_ns_ns <- read.csv("/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/bi_gram_ns_ns.csv", colClasses = c( NA, NA, NA) )
 combi_bi_ns_ns <- data.table(combi_bi_ns_ns)
-trixy <- combi_bi_ns_ns[combi_bi_ns_ns$bi_gram_ns_ns >= 8,]
+trixy <- combi_bi_ns_ns[combi_bi_ns_ns$bi_gram_ns_ns >= 6,]
 ##trixy <- data.table(combi_bi_ns_ns)
 aggy <- trixy[,.(sum = sum(bi_gram_ns_ns)), by = word1]
-aggy <- aggy[aggy$sum >= 5]
+aggy <- aggy[aggy$sum >= 3]
 aggy <- data.table(aggy)
 blah <- blocky(trixy, aggy, full_tri)
 write.csv(blah,file = "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_bi_ns_ns.csv" )
@@ -122,7 +122,7 @@ combi_tri_ns_ns <- data.table(combi_tri_ns_ns)
 trixy <- combi_tri_ns_ns[combi_tri_ns_ns$tri_gram_ns_ns >= 4,]
 ##trixy <- data.table(combi_tri_ns_ns)
 aggy <- trixy[,.(sum = sum(tri_gram_ns_ns)), by = bigrams]
-aggy <- aggy[aggy$sum >= 6]
+aggy <- aggy[aggy$sum >= 3]
 aggy <- data.table(aggy)
 blah <- blocky(trixy, aggy, full_tri)
 write.csv(blah,file = "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_tri_ns_ns.csv" )
@@ -135,7 +135,7 @@ rm(blah)
 ## should run first
 
 
-``` {r quadgrams, eval = TRUE}
+``` {r quadgrams, eval = FALSE}
 blocky <- function(trap, tim, ful_tri) {
 a <- floor(nrow(tim)/100)
 b <- 101
