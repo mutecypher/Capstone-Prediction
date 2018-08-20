@@ -11,20 +11,20 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr, quietly = TRUE)
 library(readr, quietly = TRUE)
-library(R.utils, quietly = TRUE)
-library(SnowballC, quietly = TRUE)
+#library(R.utils, quietly = TRUE)
+#library(SnowballC, quietly = TRUE)
 library(tidyr, quietly = TRUE)
 library(data.table, quietly = TRUE)
-library(quanteda)
+#library(quanteda)
 library(stringr)
-library(tinytex)
+#library(tinytex)
 ```
 
 ## Remove the one-offs
 
 
 ## now let's process the ones with multiple bigrams
-```{r bigrams, eval = TRUE}
+```{r bigrams, eval = FALSE}
 blocky <- function(trap, tim, ful_tri) {
 a <- floor(nrow(tim)/100)
 b <- 101
@@ -80,7 +80,7 @@ rm(blah)
 ```
 ## Now the Trigrams
 
-``` {r trigrams, eval = TRUE}
+``` {r trigrams, eval = FALSE}
 blocky <- function(trap, tim, ful_tri) {
 a <- floor(nrow(tim)/1000)
 b <- 1001
@@ -135,7 +135,7 @@ rm(blah)
 ## should run first
 
 
-``` {r quadgrams, eval = FALSE}
+``` {r quadgrams, eval = TRUE}
 blocky <- function(trap, tim, ful_tri) {
 a <- floor(nrow(tim)/100)
 b <- 101
