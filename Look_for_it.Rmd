@@ -17,10 +17,14 @@ library(plyr)
 Get a prediction going
 
 ```{r read in the data files, eval = TRUE}
+##  In this portion I read in the one_gram file, add column names and 
+## turn it intoc a data table, and calculate the percentages of each word - one_gram
 one_grams <- read.csv( "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/one_gram_ns_ns.csv")
 colnames(one_grams) <- c("word1", "total")
 one_grams <- data.table(one_grams)
 one_grams$prob <- one_grams$total/sum(one_grams$total)
+
+##In this I read in the bi_grams data, assign column names, 
 bi_grams <- read.csv( "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_bi_ns_ns.csv")
 colnames(bi_grams) <- c("X", "word1", "pred", "total", "prob")
 bi_grams <- data.table(bi_grams)
