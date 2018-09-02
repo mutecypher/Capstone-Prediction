@@ -56,9 +56,9 @@ quad_grams <- quad_grams[,2:7]
 
 ## not sure if this is valuable, I will keep it for now
 
-n_grams <- rbind.fill(one_grams, bi_grams, tri_grams)
-n_grams <- data.table(n_grams)
-write.csv(n_grams, "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/n_grams.csv")
+##n_grams <- rbind.fill(one_grams, bi_grams, tri_grams)
+##n_grams <- data.table(n_grams)
+##write.csv(n_grams, "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/n_grams.csv")
 
 ## just a practice problem for sorting with 'the first'
 ## since the minimum value set for the bigrams was 4 occurences, 
@@ -73,17 +73,33 @@ discount_tri <- 3.5
 tri_grams <- data.table(tri_grams)
 setkey(tri_grams, word1, word2)
 triggy <- data.table(tri_grams[.("the", "first")])
-triggy <- triggy[,c(2:6)]
-## and the discounted probs
-triggy$newprob <- (triggy$total - discount_tri)/(sum(triggy$total))
+
+
+## Use the discount_tri to get the new probs
+total_trigs <- sum(triggy$total)
+triggy$newprob <- (triggy$total - discount_tri)/total_trigs
+gammatri <- 1 - sum(triggy$newprob)
+
+
 ## get all bigrams that start with the second word of the trigram
 ## let's do some backing off
 ## back off bigrams are made from the second word of the trigram
-## and the unigrams of all the unobserved ending words of the trigrams
-## get a list of all the unobserved trigram endings
+## Find all the bigrams that start with the second word
+## exclude the predicted words already found in the trigram
+## Find a discounted probability with the discount_tri
+## 
+
+
 tgramw2 <- data.table(triggy$pred)
-setkey(one_grams, word1)
-tri_unused_one_grams <- data.table(one_grams[!tgramw2])
+setkey(bi_grams, word1)
+tri_unused_bi_grams <- data.table(bi_grams["first"])
+setkey(tri_unused_bi_grams, pred)
+total_un_tri <- sum(tri_unused_bi_grams$total)
+tri_unused_bi_grams <- tri_unused_bi_grams[!tgramw2]
+tri_unused_bi_grams$newprob <- gammatri*(tri_unused_bi_grams$total - discount_tri)/total_un_tri
+gammaone_g <- gammatri -  sum(tri_unused_bi_grams$newprob)
+
+
 ## the probability mass discount is the 1 minus the newprob
 ## this will be used once we find the back off bigrams - the unobserved ones
 alpha_tri <- 1 - (sum(triggy$newprob))
