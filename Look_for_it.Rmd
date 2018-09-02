@@ -19,30 +19,56 @@ Get a prediction going
 ```{r read in the data files, eval = TRUE}
 ##  In this portion I read in the one_gram file, add column names and 
 ## turn it intoc a data table, and calculate the percentages of each word - one_gram
+
 one_grams <- read.csv( "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/one_gram_ns_ns.csv")
 colnames(one_grams) <- c("word1", "total")
 one_grams <- data.table(one_grams)
 one_grams$prob <- one_grams$total/sum(one_grams$total)
 
-##In this I read in the bi_grams data, assign column names, 
+##In this I read in the bi_grams data, assign column names, convert it to a data table
+## and get rid of the "X" column
+
+
 bi_grams <- read.csv( "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_bi_ns_ns.csv")
 colnames(bi_grams) <- c("X", "word1", "pred", "total", "prob")
 bi_grams <- data.table(bi_grams)
+bi_grams <- bi_grams[,2:5]
+
+## Here we read the tri_grams data, assign column names, and convert to a data table 
+
 tri_grams <- read.csv( "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/nosingles_tri_ns_ns.csv")
 tri_grams <- separate(tri_grams, bigrams, into = c("word1", "word2"), sep = " ")
 colnames(tri_grams) <- c("X", "word1", "word2", "pred", "total", "prob")
+tri_grams <- data.table(tri_grams)
+tri_grams <- tri_grams[,2:6]
+
+## Same deal with quad_grams, read the file, create column names, make a data table
+
+
 quad_grams <-  read.csv( "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/sep_quad.csv")
 colnames(quad_grams) <- c("X", "word1", "word2","word3", "pred", "total", "prob")
+quad_grams <- data.table(quad_grams)
+quad_grams <- quad_grams[,2:7]
+
 ##quin_grams <- read.csv( "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/sep_quin.csv")
 ##colnames(quin_grams) <- c("X", "word1", "word2","word3", "word4", "pred","total", "prob")
+
+
+## not sure if this is valuable, I will keep it for now
+
 n_grams <- rbind.fill(one_grams, bi_grams, tri_grams)
-n_grams <- n_grams[c(1,2,6,3,4,5)]
-n_grams <- n_grams[,2:6]
 n_grams <- data.table(n_grams)
 write.csv(n_grams, "/Users/mutecypher/Documents/Coursera/Capstone Project/20sample/n_grams.csv")
+
 ## just a practice problem for sorting with 'the first'
+## since the minimum value set for the bigrams was 4 occurences, 
+## I set the discount to 3.5
+
+
 discount_bi <- 3.5
 discount_tri <- 3.5
+
+
 ## find all trigrams that begin with the sample bigram "the first"
 tri_grams <- data.table(tri_grams)
 setkey(tri_grams, word1, word2)
