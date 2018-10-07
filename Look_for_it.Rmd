@@ -109,9 +109,9 @@ alpha_tri <- 1 - (sum(triggy$newprob))
 setkey(bi_grams, word1)
 biggy <- bi_grams["first"]
 biggy <- data.table(biggy)
-biggy <- biggy[,c(2:5)]
+##biggy <- biggy[,c(2:4)]
 setkey(biggy, pred)
-backoff_bigrams <- data.table(biggy[tri_unused_one_grams])
+backoff_bigrams <- data.table(biggy[tri_unused_bi_grams])
 ## remove NAs
 backoff_bigrams <- backoff_bigrams[complete.cases(backoff_bigrams)]
 backoff_bigrams <- backoff_bigrams[,1:4]
